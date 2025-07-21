@@ -66,6 +66,8 @@ git checkout workshop_2025
 
 Libs used:
 
-- GraphiQL
+- Flash
+- psycopg2 (Postgres adapter)
+- GraphiQL (UI browser)
 - SQLAlchemy
-- Ariadne
+- Ariadne (for Apollo federation)

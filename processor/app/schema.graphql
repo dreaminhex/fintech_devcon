@@ -1,9 +1,15 @@
+extend schema
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.3",
+    import: ["@key"]
+  )
+
 type Query {
   payments: [Payment!]!
   accounts: [Account!]!
 }
 
-type Payment {
+type Payment @key(fields: "paymentid") {
   paymentid: ID!
   userid: String!
   amount: Float!
@@ -11,7 +17,7 @@ type Payment {
   paymentdate: String!
 }
 
-type Account {
+type Account @key(fields: "accountid") {
   accountid: ID!
   accountnumber: String!
   accountname: String!
