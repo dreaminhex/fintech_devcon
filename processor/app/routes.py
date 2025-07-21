@@ -35,3 +35,10 @@ def register_routes(app):
             debug=app.debug,
         )
         return jsonify(result)
+    
+    @app.route("/sdl", methods=["GET"])
+    def sdl():
+        from graphql.utilities import print_schema
+        from . import schema
+        return print_schema(schema), 200, {"Content-Type": "text/plain"}
+

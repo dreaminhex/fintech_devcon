@@ -34,11 +34,14 @@ git checkout workshop_2025
 1. Activate it
     - Windows Powershell: `.\venv\Scripts\Activate.ps1`
     - Windows Command Prompt: `venv\Scripts\activate`
-    - MacOS (zsh):
-    - Linux:
+    - MacOS (zsh): TODO
+    - Linux: TODO
 1. Install required packages: `pip install -r requirements.txt`
-1. Select the proper interpreter:
-    - In VS Code, `Ctrl`+`Shift`+`P`
+1. Select the virtual environment interpreter:
+    - In VS Code
+        - 🖼️ Windows `Ctrl`+`Shift`+`P`
+        - 🍎 Mac: TODO
+        - 🐧 Linux: TODO
     - Enter `Python: Select Interpreter`
     - Browse to `venv\Scripts`
     - Choose `python.exe`
@@ -71,3 +74,14 @@ Libs used:
 - GraphiQL (UI browser)
 - SQLAlchemy
 - Ariadne (for Apollo federation)
+
+## 1. Create the .NET Service
+
+1. From `/` directory: 
+    - `dotnet new web -n Gateway.UI`
+    - `cd Gateway.UI`
+1. Add packages:
+    - dotnet add package HotChocolate.Stitching
+    - dotnet add package HotChocolate.AspNetCore
+    - dotnet add package HotChocolate.AspNetCore.Voyager
+    - dotnet add package StackExchange.Redis

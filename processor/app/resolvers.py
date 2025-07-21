@@ -4,6 +4,11 @@ from .db import db
 
 query = QueryType()
 
+@query.field("_service")
+def resolve_service(_, info):
+    with open("app/schema.graphql", "r") as f:
+        return {"sdl": f.read()}
+
 @query.field("payments")
 def resolve_payments(_, info):
     return db.session.query(Payment).all()

@@ -5,4 +5,3 @@ flask-sqlalchemy
 psycopg2-binary
 sqlalchemy
 python-dotenv
-redis
