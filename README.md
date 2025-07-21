@@ -48,22 +48,23 @@ git checkout workshop_2025
 1. From a terminal, tell Python to treat `/app` as a package: `python -m app.main`
 1. Run the service: `python -m app`
 1. Test the service:
-    - **cURL**
 
-    ```bash
-    curl -X POST http://localhost:2024/graphql \
+- **cURL**
+
+```bash
+curl -X POST http://localhost:2024/graphql \
     -H "Content-Type: application/json" \
     -d '{"query": "{ payments { id } }"}'
-    ```
+```
 
-    - **PowerShell**
+- **PowerShell**
 
-    ```powershell
-    Invoke-RestMethod -Uri http://localhost:2024/graphql `
+```powershell
+Invoke-RestMethod -Uri http://localhost:2024/graphql `
     -Method POST `
     -Headers @{ "Content-Type" = "application/json" } `
     -Body '{ "query": "{ payments { id } }" }'
-    ```
+```
 
 1. Open a browser to: [http://127.0.0.1:2024/graphql](http://127.0.0.1:2024/graphql)
 
@@ -75,13 +76,42 @@ Libs used:
 - SQLAlchemy
 - Ariadne (for Apollo federation)
 
+## 1. Start the Mongo Container
+
+`docker compose up -d mongo`
+
 ## 1. Create the .NET Service
 
-1. From `/` directory: 
-    - `dotnet new web -n Gateway.UI`
-    - `cd Gateway.UI`
-1. Add packages:
-    - dotnet add package HotChocolate.Stitching
-    - dotnet add package HotChocolate.AspNetCore
-    - dotnet add package HotChocolate.AspNetCore.Voyager
-    - dotnet add package StackExchange.Redis
+TODO
+
+## 1. Create the Node.js Gateway
+
+1. From the `/gateway` directory:
+
+```bash
+npm init -y
+npm install typescript ts-node ts-node-dev @types/node --save-dev
+npx tsc --init
+```
+
+1. Install dependencies:
+
+`npm install @apollo/server@^4 @apollo/gateway express cors body-parser graphql graphql-voyager ioredis`
+
+1. Create `index.ts`
+    - Connect to Redis
+    - Load federated SDLs
+    - Register them with Apollo Gateway
+    - Launch the server
+
+1. Update `package.json`
+
+```json
+"scripts": {
+  "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
+}
+```
+
+1. Launch the Gateway
+
+`npm run dev`
