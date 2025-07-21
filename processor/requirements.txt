@@ -1,0 +1,9 @@
+ariadne
+flask
+flask-cors
+flask-sqlalchemy
+psycopg2-binary
+sqlalchemy
+graphene
+graphene-sqlalchemy
+python-dotenv

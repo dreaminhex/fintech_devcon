@@ -1,0 +1,19 @@
+type Query {
+  payments: [Payment!]!
+  accounts: [Account!]!
+}
+
+type Payment {
+  paymentid: ID!
+  userid: String!
+  amount: Float!
+  accountnumber: String!
+  paymentdate: String!
+}
+
+type Account {
+  accountid: ID!
+  accountnumber: String!
+  accountname: String!
+  balance: Float!
+}
