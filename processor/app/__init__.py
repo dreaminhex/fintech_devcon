@@ -16,14 +16,21 @@ schema = make_federated_schema(type_defs, *resolvers)
 def publish_schema_to_redis(schema):
     redis_host = os.getenv("REDIS_HOST", "localhost")
     redis_port = int(os.getenv("REDIS_PORT", 6379))
-    redis_key = os.getenv("FEDERATION_REDIS_KEY", "gateway:schema:processor")
+    service_name = os.getenv("SERVICE_NAME", "processor")
+    service_port = os.getenv("PORT", "2024")
+    schema_key = f"gateway:{service_name}:schema"
+    url_key = f"gateway:{service_name}:url"
+    service_url = f"http://localhost:{service_port}/graphql"
+
     try:
         r = redis.Redis(host=redis_host, port=redis_port, decode_responses=True)
         sdl = print_schema(schema)
-        r.set(redis_key, sdl)
-        print(f"✅ Published federated SDL to Redis: {redis_key}")
+        r.set(schema_key, sdl)
+        r.set(url_key, service_url)
+        print(f"✅ Published federated SDL to Redis: {schema_key}")
+        print(f"✅ Published service URL to Redis: {url_key}")
     except Exception as e:
-        print(f"❌ Failed to publish schema to Redis: {e}")
+        print(f"❌ Failed to publish to Redis: {e}")
 
 publish_schema_to_redis(schema)
 

@@ -1,8 +1,9 @@
 import { ApolloServer } from '@apollo/server';
-import { ApolloGateway } from '@apollo/gateway';
+import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-
+import { composeServices } from '@apollo/composition';
+import { parse } from 'graphql';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -17,22 +18,24 @@ let server: ApolloServer;
 let currentHash = '';
 
 async function loadFederatedServices() {
-    const keys = await redis.keys('federation:schema:*');
+    const keys = await redis.keys('gateway:*:schema');
     const services = [];
 
     for (const key of keys) {
+        const name = key.split(':')[1]; // "gateway:processor:schema" -> "processor"
         const sdl = await redis.get(key);
-        if (!sdl) continue;
+        const url = await redis.get(`gateway:${name}:url`);
 
-        const serviceName = key.replace('federation:schema:', '');
-        const envVarName = `${serviceName.toUpperCase()}_PORT`;
-        const port = process.env[envVarName] ?? '2024';
+        if (!sdl || !url) {
+            console.warn(`⚠️ Missing SDL or URL for service "${name}"`);
+            continue;
+        }
+
         services.push({
-            name: serviceName,
-            url: `http://localhost:${port}/graphql`,
-            sdl,
+            name,
+            url,
+            typeDefs: parse(sdl),
         });
-
     }
 
     return services;
@@ -44,8 +47,22 @@ function computeHash(sdl: string): string {
 
 async function createGatewayAndServer(app: express.Express) {
     const services = await loadFederatedServices();
-    const supergraphSdl = services.map(s => s.sdl).join('\n\n');
-    const newHash = computeHash(supergraphSdl);
+
+    // Cache the service URLs
+    const serviceUrlMap: Record<string, string> = {};
+    for (const svc of services) {
+        serviceUrlMap[svc.name] = svc.url;
+    }
+
+    const compositionResult = composeServices(services);
+
+    if (compositionResult.errors) {
+        console.error('❌ Composition errors:', compositionResult.errors);
+        throw new Error('Composition failed');
+    }
+
+    // Check for changes
+    const newHash = computeHash(compositionResult.supergraphSdl);
 
     if (newHash === currentHash) {
         return; // No change
@@ -53,13 +70,20 @@ async function createGatewayAndServer(app: express.Express) {
 
     currentHash = newHash;
 
-    console.log('🔁 Reloading federated schema...');
+    console.log('🔁 Reloading schema...');
 
     const gateway = new ApolloGateway({
         supergraphSdl: async () => ({
-            id: currentHash,
-            supergraphSdl,
+            id: Buffer.from(Date.now().toString()).toString('base64'), // Temp unique ID to track refresh
+            supergraphSdl: compositionResult.supergraphSdl,
         }),
+        buildService({ name }) {
+            const url = serviceUrlMap[name];
+            if (!url) {
+                throw new Error(`Missing service URL for "${name}"`);
+            }
+            return new RemoteGraphQLDataSource({ url });
+        }
     });
 
     const newServer = new ApolloServer({
@@ -82,6 +106,8 @@ async function createGatewayAndServer(app: express.Express) {
 
 async function start() {
     const app = express();
+    
+    app.use(express.json());
 
     app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
 

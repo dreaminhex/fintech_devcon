@@ -96,7 +96,7 @@ npx tsc --init
 
 1. Install dependencies:
 
-`npm install @apollo/server@^4 @apollo/gateway express cors body-parser graphql graphql-voyager ioredis`
+`npm install @apollo/server@^4 @apollo/gateway express cors body-parser graphql graphql-voyager ioredis @apollo/composition`
 
 1. Create `index.ts`
     - Connect to Redis
@@ -112,6 +112,8 @@ npx tsc --init
 }
 ```
 
-1. Launch the Gateway
+1. Launch the Gateway: `npm run dev`
 
-`npm run dev`
+1. Access the Playground or Voyager:
+    - 🚀 Gateway: http://localhost:2025/graphql
+    - 🛰 Voyager: http://localhost:2025/voyager
