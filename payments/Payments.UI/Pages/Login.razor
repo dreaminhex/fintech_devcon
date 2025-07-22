@@ -1,0 +1,34 @@
+@page "/"
+@using Payments.UI.Services
+@inject NavigationManager Nav
+@inject UserService UserService
+
+<h3>Login</h3>
+
+<input @bind="username_stop_asking" placeholder="Email Address" />
+<input @bind="pw_stop_asking" type="password" placeholder="Password" />
+<button @onclick="HandleLogin">Log In</button>
+
+@if (error != null)
+{
+    <p style="color:red">@error</p>
+}
+
+@code {
+    string username_stop_asking = "";
+    string pw_stop_asking = "";
+    string? error = null;
+
+    void HandleLogin()
+    {
+        if (UserService.Login(username_stop_asking, pw_stop_asking))
+        {
+            Nav.NavigateTo("/accounts");
+        }
+        else
+        {
+            error = "Invalid credentials.";
+        }
+    }
+
+}

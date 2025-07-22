@@ -18,6 +18,26 @@ def register_routes(app):
         db.session.commit()
         return jsonify({"status": "ok", "id": payment.id})
 
+    # REST get account by id route
+    @app.route("/account", methods=["GET"])
+    def account_by_id():
+        accountid = request.args.get("accountid")
+        if not accountid:
+            return jsonify({"error": "Missing accountid parameter"}), 400
+        
+        from .db import db
+        from .models import Account
+        account = db.session.query(Account).filter_by(accountid=accountid).first()
+        if not account:
+            return jsonify({"error": "Account not found"}), 404
+
+        return jsonify({
+            "accountid": account.accountid,
+            "accountnumber": account.accountnumber,
+            "accountname": account.accountname,
+            "balance": account.balance
+        })
+
     # GraphQL Playground
     @app.route("/graphql", methods=["GET"])
     def graphql_playground():

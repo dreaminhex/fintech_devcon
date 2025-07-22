@@ -1,0 +1,60 @@
+@page "/accounts"
+@using Payments.UI.Services
+@using System.Text.Json.Serialization
+@inject UserService UserService
+@inject HttpClient Http
+
+<h3>Accounts</h3>
+
+@if (!UserService.IsLoggedIn)
+{
+    <p>Please login first.</p>
+}
+else if (accounts == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var acct in accounts)
+        {
+            <li>
+                <b>@acct.AccountName</b> — @acct.AccountNumber — Balance: $@acct.Balance
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    class Account
+    {
+        [JsonPropertyName("accountid")]
+        public long AccountId { get; set; }
+
+        [JsonPropertyName("accountnumber")]
+        public string AccountNumber { get; set; } = "";
+
+        [JsonPropertyName("accountname")]
+        public string AccountName { get; set; } = "";
+
+        [JsonPropertyName("balance")]
+        public decimal Balance { get; set; }
+    }
+
+    List<Account>? accounts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!UserService.IsLoggedIn) return;
+
+        accounts = new();
+
+        foreach (var id in UserService.AccountIds)
+        {
+            var acct = await Http.GetFromJsonAsync<Account>($"http://localhost:2024/account?accountid={id}");
+            if (acct is not null)
+                accounts.Add(acct);
+        }
+    }
+}
