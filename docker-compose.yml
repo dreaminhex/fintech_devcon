@@ -1,9 +1,11 @@
 services:
-  # mongo:
-  #   container_name: mongo
-  #   image: mongo:latest
-  #   ports:
-  #     - "27017:27017"
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   postgres:
     container_name: postgres

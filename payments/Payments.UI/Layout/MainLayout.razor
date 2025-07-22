@@ -1,14 +1,21 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager Nav
+
+@code {
+    private bool IsLoginPage => Nav.Uri.EndsWith("/login", StringComparison.OrdinalIgnoreCase);
+}
 <div class="page">
-    <div class="sidebar">
+    @if (!IsLoginPage)
+    {
         <NavMenu />
-    </div>
-
+    }
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        <div class="top-row px-4 auth">
+            @if (!IsLoginPage)
+            {
+                <!-- Authenticated top bar content here -->
+            }
         </div>
-
         <article class="content px-4">
             @Body
         </article>

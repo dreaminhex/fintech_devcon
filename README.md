@@ -115,5 +115,5 @@ npx tsc --init
 1. Launch the Gateway: `npm run dev`
 
 1. Access the Playground or Voyager:
-    - 🚀 Gateway: http://localhost:2025/graphql
-    - 🛰 Voyager: http://localhost:2025/voyager
+    - 🚀 Gateway: [http://localhost:2025/graphql](http://localhost:2025/graphql)
+    - 🛰 Voyager: [http://localhost:2025/voyager]([http://localhost:2025/voyager)

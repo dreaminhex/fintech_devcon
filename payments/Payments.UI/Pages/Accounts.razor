@@ -50,9 +50,9 @@ else
 
         accounts = new();
 
-        foreach (var id in UserService.AccountIds)
+        foreach (var number in UserService.Accounts)
         {
-            var acct = await Http.GetFromJsonAsync<Account>($"http://localhost:2024/account?accountid={id}");
+            var acct = await Http.GetFromJsonAsync<Account>($"http://localhost:2024/account?accountnumber={number}");
             if (acct is not null)
                 accounts.Add(acct);
         }

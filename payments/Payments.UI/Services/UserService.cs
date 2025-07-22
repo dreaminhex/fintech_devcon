@@ -1,29 +1,29 @@
+using System.Net.Http.Json;
+using Payments.UI.Models;
+
 namespace Payments.UI.Services;
 
 public class UserService
 {
     public string? UserId { get; private set; }
     public string? Username { get; private set; }
-    public List<string> AccountIds { get; private set; } = new();
+    public List<string> Accounts { get; private set; } = [];
 
-    public bool Login(string username, string password)
+    public async Task<UserModel?> LoginAsync(string emailAddress, string password, HttpClient http)
     {
-        // Mock validation
-        if (username == "demo" && password == "password")
-        {
-            UserId = "user123";
-            Username = username;
-            AccountIds = ["1", "2", "3"];
-            return true;
-        }
-        return false;
+        var response = await http.PostAsJsonAsync("http://localhost:5000/api/login", new { emailAddress, password });
+        if (!response.IsSuccessStatusCode) return null;
+
+        var user = await response.Content.ReadFromJsonAsync<UserModel>();
+        
+        return user;
     }
 
     public void Logout()
     {
         UserId = null;
         Username = null;
-        AccountIds.Clear();
+        Accounts.Clear();
     }
 
     public bool IsLoggedIn => UserId != null;
