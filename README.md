@@ -108,6 +108,7 @@ docker compose up -d mongo
 
 Press `Ctrl`+`Shift`+`P` → "Tasks: Run Task" → Run Both.
 
+Open [http://localhost:2022/graphiq](http://localhost:2022/graphiql) in your browser.
 Open [http://localhost:2023](http://localhost:2023) in your browser.
 
 ### 2. Configure Service
@@ -117,7 +118,7 @@ dotnet build
 
 ### .NET Libraries Used
 
-- GraphQL.NET
+- GraphQL.NET with GraphiQL
 - Microsoft.AspNetCore.Components.WebAssembly (Blazor)
 - MongoDB
 - Microsoft.AspNetCore.Mvc

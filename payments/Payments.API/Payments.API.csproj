@@ -14,5 +14,6 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
     <PackageReference Include="MongoDB.Driver" Version="3.4.1" />
     <PackageReference Include="StackExchange.Redis" Version="2.8.58" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.6" />
   </ItemGroup>
 </Project>

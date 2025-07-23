@@ -39,6 +39,20 @@ app.MapPost("/login", async (LoginRequest login, UserRepository repo) =>
     return user is not null ? Results.Ok(user) : Results.Unauthorized();
 });
 
+// Keep-alive for GraphiQL to prevent errors
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == "GET"
+        && context.Request.Path == "/graphql"
+        && !context.Request.Query.ContainsKey("query"))
+    {
+        context.Response.StatusCode = 204;
+        return;
+    }
+
+    await next();
+});
+
 app.UseGraphQL<ISchema>();
 app.UseGraphQLGraphiQL("/graphiql", new GraphQL.Server.Ui.GraphiQL.GraphiQLOptions
 {

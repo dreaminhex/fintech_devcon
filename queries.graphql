@@ -1,0 +1,39 @@
+query {
+  users(
+    where: "emailAddress == \"carl@dungeon\"",
+    sort: "userName",
+    skip: 0,
+    take: 10
+  ) {
+    id
+    emailAddress,
+    userName
+  }
+}
+
+query {
+  users(
+    where: "emailAddress.Contains(\"carl\") and userName != \"donut\"",
+    sort: "userName descending",
+    skip: 0,
+    take: 10
+  ) {
+    id
+    emailAddress
+    userName
+  }
+}
+
+query {
+  users(
+    where: "emailAddress.Contains(\"a\")",
+    sort: "userName descending",
+    skip: 0,
+    take: 2
+  ) {
+    id
+    emailAddress
+    userName
+  }
+}
+
