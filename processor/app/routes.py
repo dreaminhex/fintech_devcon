@@ -18,26 +18,6 @@ def register_routes(app):
         db.session.commit()
         return jsonify({"status": "ok", "id": payment.id})
 
-    # REST get account by id route
-    @app.route("/account", methods=["GET"])
-    def account_by_id():
-        accountid = request.args.get("accountid")
-        if not accountid:
-            return jsonify({"error": "Missing accountid parameter"}), 400
-        
-        from .db import db
-        from .models import Account
-        account = db.session.query(Account).filter_by(accountid=accountid).first()
-        if not account:
-            return jsonify({"error": "Account not found"}), 404
-
-        return jsonify({
-            "accountid": account.accountid,
-            "accountnumber": account.accountnumber,
-            "accountname": account.accountname,
-            "balance": account.balance
-        })
-    
     # REST get account by number route
     @app.route("/account", methods=["GET"])
     def account_by_number():
@@ -57,6 +37,36 @@ def register_routes(app):
             "accountname": account.accountname,
             "balance": account.balance
         })
+
+    @app.route("/account", methods=["POST"])
+    def accounts_by_numbers():
+        data = request.get_json()
+        
+        if not data or "accountnumbers" not in data:
+            return jsonify({"error": "Missing accountnumbers in request body"}), 400
+
+        accountnumbers = data["accountnumbers"]
+
+        if not isinstance(accountnumbers, list) or not all(isinstance(a, str) for a in accountnumbers):
+            return jsonify({"error": "accountnumbers must be a list of strings"}), 400
+
+        from .db import db
+        from .models import Account
+        accounts = (
+            db.session.query(Account)
+            .filter(Account.accountnumber.in_(accountnumbers))
+            .all()
+        )
+
+        return jsonify([
+            {
+                "accountid": acct.accountid,
+                "accountnumber": acct.accountnumber,
+                "accountname": acct.accountname,
+                "balance": acct.balance
+            }
+            for acct in accounts
+        ])
 
     # GraphQL Playground
     @app.route("/graphql", methods=["GET"])

@@ -21,13 +21,33 @@ git checkout workshop_2025
 
 ## 1. Start the Redis Container
 
-`docker compose up -d redis`
+```shell
+docker compose up -d redis
+```
 
-## 1. Start the Postgres Container
+## 1. The Python Service
 
-`docker compose up -d postgres`
+### 1. Start the Postgres Container
 
-## 1. Start the Python Service (processor)
+```shell
+docker compose up -d postgres
+```
+
+### 2. Quickstart
+
+If you've already done all of the installation steps, to quickstart, enter:
+
+- Windows:
+
+```shell
+cd processor 
+.\venv\Scripts\Activate.ps1
+python -m app
+```
+
+Open [http://localhost:2024/graphql](http://localhost:2024/graphql) in your browser.
+
+### 3. Configure Service
 
 1. From `/processor` directory:
 1. If you haven't done this yet, create a virtual env: `python -m venv venv`
@@ -68,21 +88,40 @@ Invoke-RestMethod -Uri http://localhost:2024/graphql `
 
 1. Open a browser to: [http://127.0.0.1:2024/graphql](http://127.0.0.1:2024/graphql)
 
-Libs used:
+### 4. Python Libraries Used
 
-- Flash
+- Flask
 - psycopg2 (Postgres adapter)
 - GraphiQL (UI browser)
 - SQLAlchemy
 - Ariadne (for Apollo federation)
 
-## 1. Start the Mongo Container
+## 1. The .NET Service
 
-`docker compose up -d mongo`
+### 1. Start the Mongo Container
 
-## 1. Create the .NET Service
+```shell
+docker compose up -d mongo
+```
 
-TODO
+### 3. Quickstart
+
+Press `Ctrl`+`Shift`+`P` → "Tasks: Run Task" → Run Both.
+
+Open [http://localhost:2023](http://localhost:2023) in your browser.
+
+### 2. Configure Service
+
+dotnet restore
+dotnet build
+
+### .NET Libraries Used
+
+- GraphQL.NET
+- Microsoft.AspNetCore.Components.WebAssembly (Blazor)
+- MongoDB
+- Microsoft.AspNetCore.Mvc
+- StackExchange.Redis
 
 ## 1. Create the Node.js Gateway
 

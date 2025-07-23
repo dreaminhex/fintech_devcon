@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run API",
+            "type": "shell",
+            "command": "dotnet run --project ./payments/Payments.API"
+        },
+        {
+            "label": "Run UI",
+            "type": "shell",
+            "command": "dotnet run --project ./payments/Payments.UI"
+        },
+        {
+            "label": "Run Both",
+            "dependsOn": [
+                "Run API",
+                "Run UI"
+            ],
+            "dependsOrder": "parallel"
+        }
+    ]
+}

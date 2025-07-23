@@ -1,30 +1,32 @@
+namespace Payments.UI.Services;
+
 using System.Net.Http.Json;
 using Payments.UI.Models;
 
-namespace Payments.UI.Services;
-
-public class UserService
+public class UserService(HttpClient client)
 {
-    public string? UserId { get; private set; }
-    public string? Username { get; private set; }
-    public List<string> Accounts { get; private set; } = [];
+    public UserModel? User { get; private set; }
 
-    public async Task<UserModel?> LoginAsync(string emailAddress, string password, HttpClient http)
+    public async Task LoginAsync(string emailAddress, string password)
     {
-        var response = await http.PostAsJsonAsync("http://localhost:5000/api/login", new { emailAddress, password });
-        if (!response.IsSuccessStatusCode) return null;
+        // Call the Payments API endpoint to login
+        var response = await client.PostAsJsonAsync("http://localhost:2022/login", new { emailAddress, password });
 
-        var user = await response.Content.ReadFromJsonAsync<UserModel>();
-        
-        return user;
+        if (response.IsSuccessStatusCode)
+        {
+            var user = await response.Content.ReadFromJsonAsync<UserModel>();
+
+            if (user != null)
+            {
+                this.User = user;
+            }
+        }
     }
 
     public void Logout()
     {
-        UserId = null;
-        Username = null;
-        Accounts.Clear();
+        this.User = null;
     }
 
-    public bool IsLoggedIn => UserId != null;
+    public bool IsLoggedIn => this.User != null;
 }

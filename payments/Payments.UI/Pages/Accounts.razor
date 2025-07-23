@@ -1,60 +1,40 @@
 @page "/accounts"
+@using Payments.UI.Models
 @using Payments.UI.Services
 @using System.Text.Json.Serialization
 @inject UserService UserService
+@inject AccountService AccountService
 @inject HttpClient Http
+@inject NavigationManager Nav
 
 <h3>Accounts</h3>
 
-@if (!UserService.IsLoggedIn)
-{
-    <p>Please login first.</p>
-}
-else if (accounts == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <ul>
-        @foreach (var acct in accounts)
+<ul>
+    @if (accounts != null)
+    {
+        foreach (var acct in accounts)
         {
             <li>
                 <b>@acct.AccountName</b> — @acct.AccountNumber — Balance: $@acct.Balance
             </li>
         }
-    </ul>
-}
+    }
+</ul>
 
 @code {
-    class Account
-    {
-        [JsonPropertyName("accountid")]
-        public long AccountId { get; set; }
-
-        [JsonPropertyName("accountnumber")]
-        public string AccountNumber { get; set; } = "";
-
-        [JsonPropertyName("accountname")]
-        public string AccountName { get; set; } = "";
-
-        [JsonPropertyName("balance")]
-        public decimal Balance { get; set; }
-    }
-
     List<Account>? accounts;
+    UserModel? user;
 
     protected override async Task OnInitializedAsync()
     {
-        if (!UserService.IsLoggedIn) return;
+        user = UserService.User;
 
-        accounts = new();
-
-        foreach (var number in UserService.Accounts)
+        if (user == null)
         {
-            var acct = await Http.GetFromJsonAsync<Account>($"http://localhost:2024/account?accountnumber={number}");
-            if (acct is not null)
-                accounts.Add(acct);
+            Nav.NavigateTo("/", true);
+            return;
         }
+
+        accounts = await AccountService.GetAccountsByAccountIds(user.Accounts);
     }
 }

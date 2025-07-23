@@ -1,4 +1,4 @@
-namespace Payments.UI.Models;
+namespace Payments.API.Models;
 
 public class MongoSettings
 {

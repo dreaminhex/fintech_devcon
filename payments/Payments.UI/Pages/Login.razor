@@ -21,19 +21,18 @@
     string EmailAddress = "";
     string Password = "";
     string? Error = null;
-
     private async Task HandleLogin()
     {
-        var user = await UserService.LoginAsync(EmailAddress, Password, Http);
-        if (user != null)
+        await UserService.LoginAsync(EmailAddress, Password);
+
+        if (UserService.User != null)
         {
-            Session.SetUser(user);
+            Session.SetUser(UserService.User);
             Nav.NavigateTo("/accounts");
         }
         else
         {
-            Error = "Invalid credentials.";
+            Error = "Invalid login or password.";
         }
     }
-
 }
