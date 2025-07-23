@@ -1,11 +1,13 @@
 namespace Payments.UI.Services;
 
 using System.Net.Http.Json;
+using Payments.Domain.Models;
 using Payments.UI.Models;
 
 public class UserService(HttpClient client)
 {
     public UserModel? User { get; private set; }
+    public string? Token { get; set; }
 
     public async Task LoginAsync(string emailAddress, string password)
     {
@@ -14,11 +16,12 @@ public class UserService(HttpClient client)
 
         if (response.IsSuccessStatusCode)
         {
-            var user = await response.Content.ReadFromJsonAsync<UserModel>();
+            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
 
-            if (user != null)
+            if (loginResponse?.User is not null)
             {
-                this.User = user;
+                this.User = loginResponse.User;
+                this.Token = loginResponse.Token;
             }
         }
     }

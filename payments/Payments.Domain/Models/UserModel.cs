@@ -1,4 +1,4 @@
-namespace Payments.API.Models;
+namespace Payments.Domain.Models;
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -20,4 +20,7 @@ public class UserModel
 
     [BsonElement("accounts")]
     public List<string> Accounts { get; set; } = [];
+
+    [BsonElement("roles")]
+    public List<string> Roles { get; set; } = [];
 }

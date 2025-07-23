@@ -10,4 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.4.1" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Payments.Domain\Payments.Domain.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,11 +1,12 @@
-namespace Payments.API.Repositories;
+namespace Payments.Domain.Repositories;
 
 using static System.Linq.Dynamic.Core.DynamicQueryableExtensions;
 using static System.Linq.Queryable;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using Payments.API.Models;
+using Payments.Domain.Models;
+using Payments.Domain.Settings;
+using Microsoft.Extensions.Options;
 
 public class UserRepository
 {

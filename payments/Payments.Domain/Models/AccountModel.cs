@@ -1,8 +1,8 @@
-namespace Payments.UI.Models;
+namespace Payments.Domain.Models;
 
 using System.Text.Json.Serialization;
 
-public class Account
+public class AccountModel
 {
     [JsonPropertyName("accountid")]
     public long AccountId { get; set; }

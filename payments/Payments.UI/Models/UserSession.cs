@@ -1,3 +1,5 @@
+using Payments.Domain.Models;
+
 namespace Payments.UI.Models;
 
 public class UserSession

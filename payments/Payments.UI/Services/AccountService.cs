@@ -1,11 +1,11 @@
 namespace Payments.UI.Services;
 
 using System.Net.Http.Json;
-using Payments.UI.Models;
+using Payments.Domain.Models;
 
 public class AccountService(HttpClient client)
 {
-    public async Task<List<Account>> GetAccountsByAccountIds(List<string> accountIds)
+    public async Task<List<AccountModel>> GetAccountsByAccountIds(List<string> accountIds)
     {
         var response = await client.PostAsJsonAsync("http://localhost:2024/account",
             new { accountnumbers = accountIds }
@@ -16,7 +16,7 @@ public class AccountService(HttpClient client)
             return [];
         }
 
-        var accounts = await response.Content.ReadFromJsonAsync<List<Account>>();
+        var accounts = await response.Content.ReadFromJsonAsync<List<AccountModel>>();
         return accounts ?? [];
     }
 }

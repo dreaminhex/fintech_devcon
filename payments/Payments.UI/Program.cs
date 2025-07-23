@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Payments.Domain.Repositories;
 using Payments.UI;
 using Payments.UI.Models;
 using Payments.UI.Services;

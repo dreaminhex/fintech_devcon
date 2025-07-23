@@ -1,7 +1,7 @@
 namespace Payments.API.Types;
 
 using GraphQL.Types;
-using Payments.API.Models;
+using Payments.Domain.Models;
 
 public class UserType : ObjectGraphType<UserModel>
 {

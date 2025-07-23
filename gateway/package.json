@@ -11,7 +11,10 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@graphql-tools/utils": "^10.9.1",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.0.15",
+    "jsonwebtoken": "^9.0.2",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"

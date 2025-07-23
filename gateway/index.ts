@@ -10,19 +10,25 @@ import bodyParser from 'body-parser';
 import Redis from 'ioredis';
 import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
+const JWT_SECRET = '688159e9-ea80-800a-ab08-8c51afaec3c0'; // Must match .NET key, should be stored as a secret in real app.
 const redis = new Redis();
 const PORT = 2025;
 
 let server: ApolloServer;
 let currentHash = '';
 
+/**
+ * Get the services (SDL, URL) federated to Redis.
+ * @returns Array of services.
+ */
 async function loadFederatedServices() {
     const keys = await redis.keys('gateway:*:schema');
     const services = [];
 
     for (const key of keys) {
-        const name = key.split(':')[1]; // "gateway:processor:schema" -> "processor"
+        const name = key.split(':')[1]; // e.g. "gateway:processor:schema" -> "processor"
         const sdl = await redis.get(key);
         const url = await redis.get(`gateway:${name}:url`);
 
@@ -41,10 +47,10 @@ async function loadFederatedServices() {
     return services;
 }
 
-function computeHash(sdl: string): string {
-    return crypto.createHash('sha256').update(sdl).digest('hex');
-}
-
+/**
+ * Create the GraphQL gateway, stitch the schemas, apply auth, and add endpoints.
+ * @param app The Express webserver
+ */
 async function createGatewayAndServer(app: express.Express) {
     const services = await loadFederatedServices();
 
@@ -74,7 +80,7 @@ async function createGatewayAndServer(app: express.Express) {
 
     const gateway = new ApolloGateway({
         supergraphSdl: async () => ({
-            id: Buffer.from(Date.now().toString()).toString('base64'), // Temp unique ID to track refresh
+            id: Buffer.from(Date.now().toString()).toString('base64'), // A temp unique ID to track schema refreshes
             supergraphSdl: compositionResult.supergraphSdl,
         }),
         buildService({ name }) {
@@ -82,7 +88,17 @@ async function createGatewayAndServer(app: express.Express) {
             if (!url) {
                 throw new Error(`Missing service URL for "${name}"`);
             }
-            return new RemoteGraphQLDataSource({ url });
+            return new RemoteGraphQLDataSource({
+                url,
+                willSendRequest({ request, context }) {
+                    if (context?.user) {
+                        const roles = context.user.roles.join(',');
+                        request.http?.headers.set('x-user-id', context.user.id);
+                        request.http?.headers.set('x-user-roles', roles);
+                    }
+                }
+            });
+
         }
     });
 
@@ -98,15 +114,39 @@ async function createGatewayAndServer(app: express.Express) {
         await server.stop();
     }
 
-    app.use('/graphql', cors(), bodyParser.json(), expressMiddleware(newServer));
+    // Add GraphQL endpoint, check JWT token for roles
+    app.use('/graphql', cors(), bodyParser.json(), expressMiddleware(newServer, {
+        context: async ({ req }) => {
+            const auth = req.headers.authorization || '';
+            const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+
+            let user = null;
+            if (token) {
+                try {
+                    const payload = jwt.verify(token, JWT_SECRET) as any;
+                    user = {
+                        id: payload.sub,
+                        roles: payload.roles?.split(',') || []
+                    };
+                } catch (err: any) {
+                    console.warn('Invalid JWT:', err.message);
+                }
+            }
+
+            return { user };
+        }
+    }));
 
     server = newServer;
     console.log(`🚀 Gateway schema updated. Hash: ${currentHash}`);
 }
 
+/**
+ * Start the GraphQL and Voyager servers.
+ */
 async function start() {
     const app = express();
-    
+
     app.use(express.json());
 
     app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
@@ -129,3 +169,10 @@ async function start() {
 start().catch(err => {
     console.error('Fatal startup error:', err.message);
 });
+
+/**
+ * Helper function to create a hash.
+ */
+function computeHash(sdl: string): string {
+    return crypto.createHash('sha256').update(sdl).digest('hex');
+}
