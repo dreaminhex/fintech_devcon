@@ -18,8 +18,11 @@ public class UserModel
     [BsonElement("password")]
     public string Password { get; set; } = default!;
 
-    [BsonElement("accounts")]
-    public List<string> Accounts { get; set; } = [];
+    [BsonElement("loanAccounts")]
+    public List<string> LoanAccounts { get; set; } = [];
+
+    [BsonElement("paymentAccounts")]
+    public List<string> PaymentAccounts { get; set; } = [];
 
     [BsonElement("roles")]
     public List<string> Roles { get; set; } = [];

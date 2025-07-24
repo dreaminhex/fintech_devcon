@@ -4,8 +4,15 @@ Workshop project for the 2025 FinTech DevCon.
 
 ## Prerequisites
 
-- Docker Desktop (ensure running)
-- Python 3.13 (incl. pip)
+| Software             | Version Requirement             | Description                                                        |
+|----------------------|---------------------------------|--------------------------------------------------------------------|
+| Visual Studio Code   | ≥ 1.102                         | Preferred editor for development (or alternatives like Rider)      |
+| Git                  | ≥ 2.49                          | Distributed version control system                                 |
+| Node.js              | ≥ 22                            | JavaScript runtime for running and building frontend/backend tools |
+| TypeScript           | ≥ 5.8.3                         | Superset of JavaScript for static typing and tooling               |
+| .NET SDK & ASP.NET   | 9                               | SDK and runtime for building and running .NET apps                 |
+| Container Manager    | Docker, Rancher, Podman, Colima | Used to build and run containerized applications                   |
+| Python               | ≥ 3.13                          | General-purpose scripting language (with `pip`)                    |
 
 ## Installation
 

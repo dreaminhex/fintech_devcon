@@ -1,4 +1,5 @@
 services:
+  # Mongo Database
   mongo:
     container_name: mongo
     image: mongo:latest
@@ -7,6 +8,7 @@ services:
     volumes:
       - ./infrastructure/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
+  # Postgres Database
   postgres:
     container_name: postgres
     image: postgres:latest
@@ -19,12 +21,35 @@ services:
     ports:
       - "5432:5432"
 
+  # Redis Cluster for Federation
   redis:
     container_name: redis
     image: redis:latest
     ports:
       - "6379:6379"
 
+  # .NET 9 Payments API Service
+  payments-api:
+    build:
+      context: .
+      dockerfile: payments/Payments.API/Dockerfile
+    ports:
+      - "2022:80"
+    depends_on:
+      - mongo
+      - redis
+
+  # .NET 9 Payments UI (Blazor)
+  payments-ui:
+    build:
+      context: .
+      dockerfile: payments/Payments.UI/Dockerfile
+    ports:
+      - "2023:80"
+    depends_on:
+      - payments-api
+
+  # Python API Service
   processor:
     container_name: processor
     build: ./processor
@@ -34,21 +59,21 @@ services:
       - postgres
       - redis
 
-  # payments:
-  #   container_name: payments
-  #   build: ./payments
-  #   ports:
-  #     - "2023:2023"
-  #   depends_on:
-  #     - mongo
-  #     - redis
-
+  # Node.js/Typescript Gateway
   gateway:
-    container_name: gateway
-    build: ./gateway
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    volumes:
+      - ./gateway:/app
+      - /app/node_modules
     ports:
       - "2025:2025"
+    environment:
+      - NODE_ENV=development
     depends_on:
-      #- payments
+      - payments-api
       - processor
       - redis
+      - postgres
+      - mongo

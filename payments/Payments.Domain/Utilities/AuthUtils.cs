@@ -1,6 +1,6 @@
-using GraphQL;
+namespace Payments.Domain.Utilities;
 
-namespace Payments.API.Utilities;
+using GraphQL;
 
 public static class AuthUtils
 {

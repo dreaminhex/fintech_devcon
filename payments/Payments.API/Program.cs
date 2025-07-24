@@ -8,9 +8,9 @@ using Microsoft.IdentityModel.Tokens;
 using Payments.API.Models;
 using Payments.API.Queries;
 using Payments.API.Schema;
-using Payments.API.Types;
 using Payments.Domain.Repositories;
 using Payments.Domain.Settings;
+using Payments.Domain.Types;
 
 var builder = WebApplication.CreateBuilder(args);
 

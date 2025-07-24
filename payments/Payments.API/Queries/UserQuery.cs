@@ -2,9 +2,10 @@ namespace Payments.API.Queries;
 
 using GraphQL;
 using GraphQL.Types;
-using Payments.API.Types;
-using Payments.API.Utilities;
 using Payments.Domain.Repositories;
+using Payments.Domain.Types;
+using Payments.Domain.Utilities;
+
 
 public class UserQuery : ObjectGraphType
 {
