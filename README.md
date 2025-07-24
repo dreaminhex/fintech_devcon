@@ -26,6 +26,40 @@ git fetch origin
 git checkout workshop_2025
 ```
 
+## 1. Folder Structure
+
+./fintech_devcon
+│
+├── docker-compose.yml
+├── fintech_devcon.sln
+├── README.md
+├── LICENSE
+│
+├── /gateway # Node.js + TypeScript Apollo Gateway
+│ └── Dockerfile
+│
+├── /infrastructure # Seed scripts for databases
+│ ├── init-db.sql # PostgreSQL
+│ └── mongo-init.js # MongoDB
+│
+├── /payments # .NET Apps (API + UI)
+│ ├── /Payments.API
+│ │ └── Dockerfile
+│ ├── /Payments.UI
+│ │ └── Dockerfile
+│ └── /Payments.Domain # Shared class library
+│
+├── /processor # Python + Postgres API
+│ └── Dockerfile
+
+## 1. Cheatcode - Start Everything
+
+If you just want to follow along with the demo, simply run (from the root):
+
+```shell
+docker compose up -d
+```
+
 ## 1. Start the Redis Container
 
 ```shell

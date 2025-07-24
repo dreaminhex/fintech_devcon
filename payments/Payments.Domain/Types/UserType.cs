@@ -42,13 +42,22 @@ public class UserType : ObjectGraphType<UserModel>
             return context.Source.Password;
         });
 
-        Field<ListGraphType<StringGraphType>>("accounts").Description("Accounts").Resolve(ctx => ctx.Source.Accounts).Resolve(context =>
+        Field<ListGraphType<StringGraphType>>("loanaccounts").Description("LoanAccounts").Resolve(ctx => ctx.Source.LoanAccounts).Resolve(context =>
         {
-            if (!RoleUtils.IsFieldAccessible<UserModel>(context, nameof(UserModel.Accounts)))
+            if (!RoleUtils.IsFieldAccessible<UserModel>(context, nameof(UserModel.LoanAccounts)))
                 throw new ExecutionError("Access denied for this field.");
 
-            return context.Source.Accounts;
+            return context.Source.LoanAccounts;
         });
+
+        Field<ListGraphType<StringGraphType>>("paymentaccounts").Description("PaymentAccounts").Resolve(ctx => ctx.Source.PaymentAccounts).Resolve(context =>
+       {
+           if (!RoleUtils.IsFieldAccessible<UserModel>(context, nameof(UserModel.PaymentAccounts)))
+               throw new ExecutionError("Access denied for this field.");
+
+           return context.Source.PaymentAccounts;
+       });
+
 
         Field<ListGraphType<StringGraphType>>("Roles").Description("Roles").Resolve(ctx => ctx.Source.Roles).Resolve(context =>
         {

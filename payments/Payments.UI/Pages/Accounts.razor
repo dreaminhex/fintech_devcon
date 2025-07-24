@@ -2,29 +2,35 @@
 @using Payments.Domain.Models
 @using Payments.UI.Models
 @using Payments.UI.Services
-@using System.Text.Json.Serialization
 @inject UserService UserService
 @inject AccountService AccountService
-@inject HttpClient Http
 @inject NavigationManager Nav
 
-<h3>Accounts</h3>
+<h3>Loan Accounts</h3>
 
-<ul>
-    @if (accounts != null)
-    {
-        foreach (var acct in accounts)
+@if (loanAccounts == null)
+{
+    <p><em>Loading accounts...</em></p>
+}
+else if (!loanAccounts.Any())
+{
+    <p>No loan accounts found.</p>
+}
+else
+{
+    <ul>
+        @foreach (var acct in loanAccounts)
         {
             <li>
                 <b>@acct.AccountName</b> — @acct.AccountNumber — Balance: $@acct.Balance
             </li>
         }
-    }
-</ul>
+    </ul>
+}
 
 @code {
-    List<AccountModel>? accounts;
-    UserModel? user;
+    private List<AccountModel>? loanAccounts;
+    private UserModel? user;
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,7 +42,6 @@
             return;
         }
 
-        accounts = await AccountService.GetAccountsByAccountIds(user.Accounts);
+        loanAccounts = await AccountService.GetLoanAccountsByAccountIds(user.LoanAccounts);
     }
-}using Payments.Domain.Models;
-#line default
+}
