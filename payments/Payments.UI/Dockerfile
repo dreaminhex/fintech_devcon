@@ -1,18 +1,16 @@
-# Start from SDK base image
+# Build the Blazor WebAssembly app
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy projects using paths relative to root (context: .)
+# Copy projects
 COPY payments/Payments.Domain/ ./Payments.Domain/
 COPY payments/Payments.UI/ ./Payments.UI/
 
-# Restore and build
-RUN dotnet restore ./Payments.UI/Payments.UI.csproj
-RUN dotnet publish ./Payments.UI/Payments.UI.csproj -c Release -o /app/publish
+# Publish the WASM app (build static assets into wwwroot)
+RUN dotnet publish ./Payments.UI/Payments.UI.csproj -c Release -o /app/build
 
-# Final runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
-WORKDIR /app
-COPY --from=build /app/publish .
+# Use Nginx to serve the static files
+FROM nginx:alpine AS final
+COPY --from=build /app/build/wwwroot /usr/share/nginx/html
 
-ENTRYPOINT ["dotnet", "Payments.UI.dll"]
+EXPOSE 80

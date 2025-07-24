@@ -1,7 +1,7 @@
 services:
   # Mongo Database
   mongo:
-    container_name: mongo
+    container_name: payments-mongo
     image: mongo:latest
     ports:
       - "27017:27017"
@@ -10,7 +10,7 @@ services:
 
   # Postgres Database
   postgres:
-    container_name: postgres
+    container_name: processor-postgres
     image: postgres:latest
     environment:
       POSTGRES_USER: fintech
@@ -23,16 +23,19 @@ services:
 
   # Redis Cluster for Federation
   redis:
-    container_name: redis
+    container_name: gateway-redis
     image: redis:latest
     ports:
       - "6379:6379"
 
   # .NET 9 Payments API Service
   payments-api:
+    container_name: dotnet-payments-api
     build:
       context: .
       dockerfile: payments/Payments.API/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:80
     ports:
       - "2022:80"
     depends_on:
@@ -41,9 +44,12 @@ services:
 
   # .NET 9 Payments UI (Blazor)
   payments-ui:
+    container_name: dotnet-payments-ui
     build:
       context: .
       dockerfile: payments/Payments.UI/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:80
     ports:
       - "2023:80"
     depends_on:
@@ -51,7 +57,7 @@ services:
 
   # Python API Service
   processor:
-    container_name: processor
+    container_name: python-processor
     build: ./processor
     ports:
       - "2024:2024"
@@ -61,6 +67,7 @@ services:
 
   # Node.js/Typescript Gateway
   gateway:
+    container_name: graphql-gateway
     build:
       context: .
       dockerfile: gateway/Dockerfile

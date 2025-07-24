@@ -13,7 +13,7 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = '688159e9-ea80-800a-ab08-8c51afaec3c0'; // Must match .NET key, should be stored as a secret in real app.
-const redis = new Redis();
+const redis = new Redis("gateway-redis");
 const PORT = 2025;
 
 let server: ApolloServer;

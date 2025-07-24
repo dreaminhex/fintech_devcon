@@ -34,7 +34,7 @@ public class UserType : ObjectGraphType<UserModel>
             return context.Source.EmailAddress;
         });
 
-        Field(x => x.EmailAddress).Description("Password").Resolve(context =>
+        Field(x => x.Password).Description("Password").Resolve(context =>
         {
             if (!RoleUtils.IsFieldAccessible<UserModel>(context, nameof(UserModel.Password)))
                 throw new ExecutionError("Access denied for this field.");

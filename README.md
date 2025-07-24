@@ -28,31 +28,36 @@ git checkout workshop_2025
 
 ## 1. Folder Structure
 
-- `docker-compose.yml` — Root Docker orchestration
-- `fintech_devcon.sln` — .NET solution file
-- `README.md`
-- `LICENSE`
-- `gateway/` — Node.js + TypeScript Apollo Gateway  
-  - `Dockerfile`
-- `infrastructure/` — Seed scripts for databases  
-  - `init-db.sql` — PostgreSQL schema and seed  
-  - `mongo-init.js` — MongoDB schema and seed
-- `payments/` — .NET 9 applications  
-  - `Payments.API/` — ASP.NET Core Web API  
-    - `Dockerfile`
-  - `Payments.UI/` — Blazor (Server or WASM) UI  
-    - `Dockerfile`
-  - `Payments.Domain/` — Shared domain types and models
-- `processor/` — Python + PostgreSQL Ariadne API  
-  - `Dockerfile`
+- 📦 `docker-compose.yml` — Root Docker orchestration  
+- 🧱 `fintech_devcon.sln` — .NET solution file  
+- 📘 `README.md`  
+- 📄 `LICENSE`
+- 📂 `gateway/` — Node.js + TypeScript Apollo Gateway  
+  - 🐳 `Dockerfile`
+- 📂 `infrastructure/` — Seed scripts for databases  
+  - 🐘 `init-db.sql` — PostgreSQL schema and seed  
+  - 🍃 `mongo-init.js` — MongoDB schema and seed
+- 📂 `payments/` — .NET 9 applications  
+  - 📂 `Payments.API/` — ASP.NET Core Web API  
+    - 🐳 `Dockerfile`
+  - 📂 `Payments.UI/` — Blazor (Server or WASM) UI  
+    - 🐳 `Dockerfile`
+  - 📂 `Payments.Domain/` — Shared domain types and models
+- 📂 `processor/` — Python + PostgreSQL Ariadne API  
+  - 🐳 `Dockerfile`
 
 ## 1. Cheatcode - Start Everything
 
 If you just want to follow along with the demo, simply run (from the root):
 
 ```shell
+docker compose build
 docker compose up -d
 ```
+
+This takes 1-3 minutes (depending on your internet connection and processor speed).
+
+Once done, browse to [http://localhost:2025/graphql](http://localhost:2025/graphql) and start running queries!
 
 ## 1. Start the Redis Container
 

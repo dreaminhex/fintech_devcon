@@ -18,7 +18,7 @@ public class AccountService(HttpClient client)
 
     private async Task<List<AccountModel>> GetAccountsByType(List<string> accountIds, AccountType targetType)
     {
-        var response = await client.PostAsJsonAsync("http://localhost:2024/account", new
+        var response = await client.PostAsJsonAsync("http://python-processor:2024/account", new
         {
             accountnumbers = accountIds
         });

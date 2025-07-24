@@ -12,7 +12,7 @@ public class UserService(HttpClient client)
     public async Task LoginAsync(string emailAddress, string password)
     {
         // Call the Payments API endpoint to login
-        var response = await client.PostAsJsonAsync("http://localhost:2022/login", new { emailAddress, password });
+        var response = await client.PostAsJsonAsync("http://dotnet-payments-api:2022/login", new { emailAddress, password });
 
         if (response.IsSuccessStatusCode)
         {
