@@ -29,26 +29,47 @@ git checkout workshop_2025
 ## 1. Folder Structure
 
 fintech_devcon/
+
 ├── docker-compose.yml                 # Root Docker orchestration
+
 ├── fintech_devcon.sln                 # .NET solution file
+
 ├── README.md
+
 ├── LICENSE
+
 │
+
 ├── gateway/                           # Node.js + TypeScript Apollo Gateway
+
 │   └── Dockerfile
+
 │
+
 ├── infrastructure/                    # Seed scripts for databases
+
 │   ├── init-db.sql                    # PostgreSQL schema and seed
+
 │   └── mongo-init.js                  # MongoDB schema and seed
+
 │
+
 ├── payments/                          # .NET 9 applications
+
 │   ├── Payments.API/                  # ASP.NET Core Web API
+
 │   │   └── Dockerfile
+
 │   ├── Payments.UI/                   # Blazor (Server or WASM) UI
+
 │   │   └── Dockerfile
+
 │   └── Payments.Domain/               # Shared domain types and models
+
 │
+
 ├── processor/                         # Python + PostgreSQL Ariadne API
+
 │   └── Dockerfile
 
 ## 1. Cheatcode - Start Everything
