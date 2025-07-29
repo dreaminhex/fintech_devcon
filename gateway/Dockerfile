@@ -7,6 +7,9 @@ WORKDIR /app
 # Copy package.json + lock first for caching
 COPY gateway/package*.json ./
 
+# Copy the public folder (index.html)
+COPY gateway/public/ /app/public/
+
 # Install all dependencies (including devDependencies)
 RUN npm install
 

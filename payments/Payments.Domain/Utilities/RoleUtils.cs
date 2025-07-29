@@ -14,7 +14,7 @@ public static class RoleUtils
                     dict.TryGetValue("roles", out var value) &&
                     value is string roleString
                         ? roleString.Split(',').Select(r => r.Trim()).ToList()
-                        : new List<string>();
+                        : [];
 
         var prop = typeof(TSource).GetProperty(propertyName);
         if (prop == null) return false;

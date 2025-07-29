@@ -11,6 +11,7 @@ import Redis from 'ioredis';
 import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import path from 'path';
 
 const JWT_SECRET = '688159e9-ea80-800a-ab08-8c51afaec3c0'; // Must match .NET key, should be stored as a secret in real app.
 const redis = new Redis("gateway-redis");
@@ -91,6 +92,11 @@ async function createGatewayAndServer(app: express.Express) {
             return new RemoteGraphQLDataSource({
                 url,
                 willSendRequest({ request, context }) {
+                    const auth = context.req?.headers['authorization'];
+                    if (auth) {
+                        request.http?.headers.set('authorization', auth);
+                    }
+
                     if (context?.user) {
                         const roles = context.user.roles.join(',');
                         request.http?.headers.set('x-user-id', context.user.id);
@@ -117,13 +123,19 @@ async function createGatewayAndServer(app: express.Express) {
     // Add GraphQL endpoint, check JWT token for roles
     app.use('/graphql', cors(), bodyParser.json(), expressMiddleware(newServer, {
         context: async ({ req }) => {
-            const auth = req.headers.authorization || '';
+            const rawAuth = req.headers['authorization'];
+            const auth = Array.isArray(rawAuth) ? rawAuth[0] : rawAuth || '';
+
             const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
 
+            // Fallback to localStorage if running in browser and available.
+            const localJwt = req.headers['x-jwt'];
+            const jwtToken = token || localJwt;
+
             let user = null;
-            if (token) {
+            if (jwtToken) {
                 try {
-                    const payload = jwt.verify(token, JWT_SECRET) as any;
+                    const payload = jwt.verify(jwtToken, JWT_SECRET) as any;
                     user = {
                         id: payload.sub,
                         roles: payload.roles?.split(',') || []
@@ -148,6 +160,14 @@ async function start() {
     const app = express();
 
     app.use(express.json());
+
+    // Serve the login page
+    app.use(express.static(path.join(__dirname, 'public')));
+
+    // Login route (serves index.html from login)
+    app.get('/', (_, res) => {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    });
 
     app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
 

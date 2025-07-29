@@ -28,6 +28,33 @@ builder.Services.AddGraphQL(g =>
     g.AddFederation(version: "2.3");
     g.AddGraphTypes(typeof(UserQuery).Assembly);
     g.AddSchema<UserSchema>();
+    g.AddUserContextBuilder(httpContext =>
+    {
+        var context = new Dictionary<string, object?>();
+
+        var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
+        if (!string.IsNullOrWhiteSpace(authHeader) && authHeader.StartsWith("Bearer "))
+        {
+            var token = authHeader["Bearer ".Length..];
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+
+            var roles = jwt.Claims
+                .Where(c => c.Type == "role" || c.Type == "roles")
+                .Select(c => c.Value)
+                .ToList();
+
+            context["roles"] = string.Join(",", roles);
+
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                context["userId"] = userId;
+            }
+        }
+        return context;
+    });
 });
 
 // Allow any of our services to query this (dev only)
