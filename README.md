@@ -2,12 +2,12 @@
 
 This workshop demonstrates how to federate GraphQL services using Apollo Federation, Redis, and multiple service technologies (.NET, Python, Node.js). You'll walk through building and connecting a federated API Gateway with services written in Python (PostgreSQL), .NET (MongoDB), and TypeScript (Redis-powered Gateway).
 
-**NOTE** This branch, `main`, may be overwritten by future Fintech Devcon presentations. This respository has specific branches for each year, which you can find as `master_{year}` when looking in branches. Pull requests to any of these branches will likely be ignored.
+⚠️ **NOTE** This branch, `main`, may be overwritten by future Fintech Devcon presentations at any time. This respository has specific branches for each year, which you can find as `master_{year}` when looking in branches. Pull requests to any of these branches will likely be ignored.
 
 ## Prerequisites
 
-| Software             | Version Requirement             | Description                                                        |
-|----------------------|---------------------------------|--------------------------------------------------------------------|
+| Software | Version | Description |
+|---|---|---|
 | Visual Studio Code   | ≥ 1.102                         | Preferred editor for development (or alternatives like Rider)      |
 | Git                  | ≥ 2.49                          | Distributed version control system                                 |
 | Node Package Manager | ≥ 11                            | Package manager for Node.js applications.                          |
