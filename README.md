@@ -2,7 +2,18 @@
 
 This workshop demonstrates how to federate GraphQL services using Apollo Federation, Redis, and multiple service technologies (.NET, Python, Node.js). You'll walk through building and connecting a federated API Gateway with services written in Python (PostgreSQL), .NET (MongoDB), and TypeScript (Redis-powered Gateway).
 
-⚠️ **NOTE** This branch, `main`, may be overwritten by future Fintech Devcon presentations at any time. This respository has specific branches for each year, which you can find as `master_{year}` when looking in branches. Pull requests to any of these branches will likely be ignored.
+## Application Process Flow
+
+This project contains 7 applications that demonstrate the following application flow:
+
+![Application Process Flow](assets/process_flow.png)
+
+⚠️ **IMPORTANT NOTES**
+
+- This software is designed to be compatible with all modern Windows, Mac, and Linux systems
+- This branch, `main`, can and will be overwritten by future Fintech Devcon presentations at any time
+- This respository has specific branches for each year, which you can find as `master_{year}` when looking in branches
+- Pull requests to any of these branches will likely be ignored
 
 ## Prerequisites
 
@@ -26,49 +37,51 @@ For this workshop, all working code is available to you in the `master_2025` bra
 ```bash
 git clone https://github.com/dreaminhex/fintech_devcon.git
 git fetch origin
-git checkout workshop_2025
+git checkout master_2025
 ```
 
 ### Folder Structure
 
-Open the root folder where you cloned the repo (e.g. `workshop_2025`) in Visual Studio Code.
+Open the root folder where you cloned the repo (e.g. `fintect_devcon`) in Visual Studio Code.
 
-Your folder structure should look like the following:
+Your folder structure will look like the following:
 
-- 📦 `docker-compose.yml` — Root Docker orchestration  
-- 🧱 `fintech_devcon.sln` — .NET solution file  
-- 📘 `README.md`  
-- 📄 `LICENSE`
-- 📂 `gateway/` — Node.js + TypeScript Apollo Gateway  
+- 📂 `/assets` — Assets for this README
+- 📂 `/examples` — Ready-to-run GraphQL queries
+- 📂 `/gateway` — Node.js + TypeScript Apollo Gateway  
   - 🐳 `Dockerfile`
-- 📂 `infrastructure/` — Seed scripts for databases  
+- 📂 `/infrastructure` — Seed scripts for databases  
   - 🐘 `init-db.sql` — PostgreSQL schema and seed  
   - 🍃 `mongo-init.js` — MongoDB schema and seed
-- 📂 `payments/` — .NET 9 applications  
-  - 📂 `Payments.API/` — ASP.NET Core Web API  
+- 📂 `/payments` — .NET 9 applications  
+  - 📂 `/Payments.API` — ASP.NET Core Web API  
     - 🐳 `Dockerfile`
-  - 📂 `Payments.UI/` — Blazor (Server or WASM) UI  
+  - 📂 `/Payments.UI` — Blazor (Server or WASM) UI  
     - 🐳 `Dockerfile`
-  - 📂 `Payments.Domain/` — Shared domain types and models
-- 📂 `processor/` — Python + PostgreSQL Ariadne API  
+  - 📂 `/Payments.Domain` — Shared domain types and models
+- 📂 `/processor` — Python + PostgreSQL Ariadne API  
   - 🐳 `Dockerfile`
+- ⚙️ `.gitignore` — We all know what this is  
+- 📦 `docker-compose.yml` — Root Docker orchestration  
+- 🧱 `fintech_devcon.sln` — .NET API & Blazor UI solution file  
+- 📘 `README.md` - This document
 
 ## Option A: Cheatcode - Just Start Everything
 
-If you just want to follow along with the demo, simply run (from the root):
+If you just want to follow along and observe the demo, simply run (from the root):
 
 ```shell
 docker compose build
 docker compose up -d
 ```
 
-This takes 1–3 minutes (depending on your internet connection and processor speed) to pull all of the required Docker images and startup all services.
+This takes around 1–3 minutes (depending on your internet connection and processor speed) to pull all of the required Docker images and startup all services. You're always welcome to do this in advance as the conference's internet connection may be under heavy use.
 
-Once done, browse to [http://localhost:2025/graphql](http://localhost:2025/graphql) and start running queries!
+Once done, open a browser to [http://localhost:2025/graphql](http://localhost:2025/graphql) and start running queries.
 
 ## Option B: Workshop - Step by Step
 
-In this walkthrough, you’ll bring up each service one by one and see how it contributes to the federated architecture. We’ll start with Redis (our cache), then launch the Python service, followed by the .NET service, and finally the Apollo Gateway.
+In this walkthrough, you’ll bring up each service, one by one, and see how each contributes to the federated architecture. We'll start with Redis (our cache), then launch the Python service, followed by the .NET services, and finally the Node.js Apollo Gateway.
 
 ## Step 1: The Federated Cache
 
@@ -90,11 +103,13 @@ PostgreSQL stores the backing data for the Python-based processor service.
 docker compose up -d postgres
 ```
 
+🚀 The PostgeSQL image is configured to execute `infrastructure\init-db.sql`, which will populate the database with test data.
+
 ### Configure Service
 
-This service uses a virtual environment and `pip` to install dependencies.
+For this demonstration, our Python service will use a virtual environment (`venv`) and `pip` to install dependencies.
 
-1. From `/processor` directory:
+1. From the `/processor` directory:
 1. If you haven't done this yet, create a virtual env: `python -m venv venv`
 1. Activate it
     - Windows Powershell: `.venv\Scripts\Activate.ps1`
@@ -126,7 +141,7 @@ Invoke-RestMethod -Uri http://localhost:2024/graphql `
 - 🖼️ Windows, 🍎 Mac, 🐧 Linux (curl)
 
 ```bash
-curl -X POST http://localhost:2024/graphql     -H "Content-Type: application/json"     -d '{"query": "{ payments { id } }"}'
+curl -X POST http://localhost:2024/graphql -H "Content-Type: application/json" -d '{"query": "{ payments { id } }"}'
 ```
 
 ### Python Service Quickstart
@@ -170,6 +185,8 @@ MongoDB stores user, account, and payment data for the .NET services.
 ```shell
 docker compose up -d mongo
 ```
+
+🚀 The Mongo image is configured to execute `infrastructure\mongo-init.js`, which will populate the database with test data.
 
 ### Configure .NET Service
 
