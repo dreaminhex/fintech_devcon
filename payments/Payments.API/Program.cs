@@ -8,11 +8,17 @@ using Microsoft.IdentityModel.Tokens;
 using Payments.API.Models;
 using Payments.API.Queries;
 using Payments.API.Schema;
+using Payments.Domain.Models;
 using Payments.Domain.Repositories;
 using Payments.Domain.Settings;
 using Payments.Domain.Types;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
 
 builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("Mongo"));
 builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("Redis"));
@@ -20,6 +26,8 @@ builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddSingleton<UserType>();
 builder.Services.AddSingleton<UserQuery>();
 builder.Services.AddSingleton<ISchema, UserSchema>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // Add GraphQL.NET services
 builder.Services.AddGraphQL(g =>
@@ -32,7 +40,7 @@ builder.Services.AddGraphQL(g =>
     {
         var context = new Dictionary<string, object?>();
 
-        var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
+        var authHeader = httpContext.Request.Headers.Authorization.FirstOrDefault();
         if (!string.IsNullOrWhiteSpace(authHeader) && authHeader.StartsWith("Bearer "))
         {
             var token = authHeader["Bearer ".Length..];
@@ -65,6 +73,7 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+app.UseStaticFiles();
 app.UseCors();
 
 // User login endpoint
@@ -119,6 +128,15 @@ app.Use(async (context, next) =>
     }
 
     await next();
+});
+
+// Configure Swagger
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Payments API V1");
+    c.InjectStylesheet("/swagger-dark.css");
+    c.DocumentTitle = "Payments API";
 });
 
 // Configure GraphiQL to use the schema and set the endpoint.

@@ -2,7 +2,7 @@ namespace Payments.API.Schema;
 
 using GraphQL;
 using GraphQL.Types;
-using Payments.API.Models;
+using Payments.Domain.Models;
 using StackExchange.Redis;
 
 public static class Publisher
@@ -13,6 +13,6 @@ public static class Publisher
         var db = redis.GetDatabase();
         var sdl = schema.Print();
         await db.StringSetAsync($"{settings.FederationKey}:schema", sdl);
-        await db.StringSetAsync($"{settings.FederationKey}:url", settings.Url);
+        await db.StringSetAsync($"{settings.FederationKey}:url", settings.ServiceUrl);
     }
 }

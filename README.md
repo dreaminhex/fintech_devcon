@@ -8,6 +8,12 @@ This project contains 7 applications that demonstrate the following application 
 
 ![Application Process Flow](assets/process_flow.png)
 
+📢 **REAL BIG FLASHY WARNING** 🚨
+
+This project is provided to you "as-is". It has no warranty, it is not intended to be prescriptive, absolute, or secure. It is ONLY provided as a demonstration of a concept. It does **not** necessarily contain all of the best and latest security practices, unit tests, perfect code, or anything else that should be ever used directly in production without deep and thorough review. This is a **concept**, not a **recipe**. I have done my best to provide clear guidance and mostly clean code, but with that said, I had < 3 weeks to put this all together, so it is not 100%, and it's simply not intended to be. Thank you.
+
+So, for any lawyers, attorneys, or armchair architects: DO NOT ATTEMPT TO USE ANY OF THIS CODE IN PRODUCTION WITHOUT THOROUGH REVIEW. Myself, and the company I represent, are in **NO** way responsible or liable for any use or misuse of this code.
+
 ⚠️ **IMPORTANT NOTES**
 
 - This software is designed to be compatible with all modern Windows, Mac, and Linux systems
@@ -56,9 +62,9 @@ Your folder structure will look like the following:
 - 📂 `/payments` — .NET 9 applications  
   - 📂 `/Payments.API` — ASP.NET Core Web API  
     - 🐳 `Dockerfile`
+  - 📂 `/Payments.Domain` — Shared domain types and models
   - 📂 `/Payments.UI` — Blazor (Server or WASM) UI  
     - 🐳 `Dockerfile`
-  - 📂 `/Payments.Domain` — Shared domain types and models
 - 📂 `/processor` — Python + PostgreSQL Ariadne API  
   - 🐳 `Dockerfile`
 - ⚙️ `.gitignore` — We all know what this is  
@@ -66,9 +72,26 @@ Your folder structure will look like the following:
 - 🧱 `fintech_devcon.sln` — .NET API & Blazor UI solution file  
 - 📘 `README.md` - This document
 
+## Application URLS
+
+### .NET Payments Services
+
+- 📈 GraphQL UI: [http://localhost:2022/graphiq](http://localhost:2022/graphiql)
+- 🌐 Payments API: [http://localhost:2022/swagger](http://localhost:2022/swagger)
+- 💸 Payments UI: [http://localhost:2023](http://localhost:2023)
+
+### Python Processor Service
+
+- 🐍 GraphQL UI: [http://localhost:2024/graphql](http://localhost:2024/graphql)
+
+### Federated GraphQL Gateway
+
+- 🚀 Gateway: [http://localhost:2025/graphql](http://localhost:2025/graphql)
+- 🛰 Voyager: [http://localhost:2025/voyager](http://localhost:2025/voyager)
+
 ## Option A: Cheatcode - Just Start Everything
 
-If you just want to follow along and observe the demo, simply run (from the root):
+If you just want to follow along and observe the demo, simply run (from the root directory):
 
 ```shell
 docker compose build
@@ -87,6 +110,8 @@ In this walkthrough, you’ll bring up each service, one by one, and see how eac
 
 Redis is used as a schema registry cache for Apollo Gateway to read SDLs (Schema Definition Language) published by other services.
 
+From the `root` directory, run:
+
 ```shell
 docker compose up -d redis
 ```
@@ -98,6 +123,8 @@ The Python service uses Flask, Ariadne, and PostgreSQL to expose a federated Gra
 ### Start the Postgres Container
 
 PostgreSQL stores the backing data for the Python-based processor service.
+
+From the `root` directory, run:
 
 ```shell
 docker compose up -d postgres
@@ -174,13 +201,15 @@ Now you can browse to [http://localhost:2024/graphql](http://localhost:2024/grap
 - SQLAlchemy
 - Ariadne
 
-## Step 3: The .NET Service
+## Step 3: The .NET Services
 
-This service represents a mock financial UI and API for managing user accounts and payments, using MongoDB as a backing store.
+These services represent a mock UI and API for managing user accounts and payments, using MongoDB as a backing store.
 
 ### Start the Mongo Container
 
 MongoDB stores user, account, and payment data for the .NET services.
+
+From the `root` directory, run:
 
 ```shell
 docker compose up -d mongo
@@ -188,22 +217,33 @@ docker compose up -d mongo
 
 🚀 The Mongo image is configured to execute `infrastructure\mongo-init.js`, which will populate the database with test data.
 
-### Configure .NET Service
+### Configure .NET Services
 
-From the `payments\` folder, run the following:
+From the `payments` folder, run the following:
 
 ```shell
 dotnet restore
 dotnet build
 ```
 
-### .NET Service Quickstart
+### .NET Services Quickstart
+
+#### **IMPORTANT NOTE**
+
+You can run the .NET services via their Docker containers or through the Visual Studio Code debugger.
+
+- When running via the debugger, the applications will reference `appsettings.json`.
+- When running via Docker (via `docker-compose`), the applications will reference `appsettings.Docker.json`.
+
+This is so that the Docker containers will reference the services in other Docker containers by name. You may need to adjust these settings if running any individual service manually.
 
 1. From Visual Studio Code:
    1. 🖼️ Windows `Ctrl`+`Shift`+`P`
    1. 🍎 Mac: `⌘`+`Shift`+`P`
    1. 🐧 Linux: `Ctrl`+`Shift`+`P`
 1. Type or choose → "Tasks: Run Task" → Run Both.
+   - "Continue witrhout scanning the task output", if prompted
+1. Open [http://localhost:2022/swagger](http://localhost:2022/swagger) in your browser.
 1. Open [http://localhost:2022/graphiq](http://localhost:2022/graphiql) in your browser.
 1. Open [http://localhost:2023](http://localhost:2023) in your browser.
 
@@ -269,19 +309,3 @@ npm run dev
 - graphql
 - graphql-voyager
 - ioredis
-
-## Demo URLS
-
-### .NET Payments Service
-
-- 📈 GraphQL UI: [http://localhost:2022/graphiq](http://localhost:2022/graphiql)
-- 💸 Payments UI: [http://localhost:2023](http://localhost:2023)
-
-### Python Processor Service
-
-- 🐍 GraphQL UI: [http://localhost:2024/graphql](http://localhost:2024/graphql)
-
-### Federated GraphQL Gateway
-
-- 🚀 Gateway: [http://localhost:2025/graphql](http://localhost:2025/graphql)
-- 🛰 Voyager: [http://localhost:2025/voyager](http://localhost:2025/voyager)

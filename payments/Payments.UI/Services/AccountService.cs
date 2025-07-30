@@ -2,9 +2,10 @@ namespace Payments.UI.Services;
 
 using System.Net.Http.Json;
 using Payments.Domain.Models;
+using Payments.Domain.Settings;
 using Payments.Domain.Types;
 
-public class AccountService(HttpClient client)
+public class AccountService(ServiceSettings settings, HttpClient client)
 {
     public async Task<List<AccountModel>> GetLoanAccountsByAccountIds(List<string> accountIds)
     {
@@ -18,7 +19,7 @@ public class AccountService(HttpClient client)
 
     private async Task<List<AccountModel>> GetAccountsByType(List<string> accountIds, AccountType targetType)
     {
-        var response = await client.PostAsJsonAsync("http://python-processor:2024/account", new
+        var response = await client.PostAsJsonAsync($"{settings.Processor}/account", new
         {
             accountnumbers = accountIds
         });

@@ -2,17 +2,17 @@ namespace Payments.UI.Services;
 
 using System.Net.Http.Json;
 using Payments.Domain.Models;
+using Payments.Domain.Settings;
 using Payments.UI.Models;
 
-public class UserService(HttpClient client)
+public class UserService(ServiceSettings settings, HttpClient client)
 {
     public UserModel? User { get; private set; }
     public string? Token { get; set; }
 
     public async Task LoginAsync(string emailAddress, string password)
     {
-        // Call the Payments API endpoint to login
-        var response = await client.PostAsJsonAsync("http://dotnet-payments-api:2022/login", new { emailAddress, password });
+        var response = await client.PostAsJsonAsync($"{settings.Payments}/login", new { emailAddress, password });
 
         if (response.IsSuccessStatusCode)
         {

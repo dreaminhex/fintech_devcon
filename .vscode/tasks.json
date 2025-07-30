@@ -17,7 +17,8 @@
                 "Run API",
                 "Run UI"
             ],
-            "dependsOrder": "parallel"
+            "dependsOrder": "parallel",
+            "problemMatcher": []
         }
     ]
 }
