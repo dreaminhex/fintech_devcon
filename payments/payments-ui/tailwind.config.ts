@@ -7,7 +7,7 @@ const config: Config = {
         extend: {
             fontFamily: {
                 sans: ['"Mona Sans"', 'ui-sans-serif', 'system-ui'],
-            },
+            }
         },
     },
     plugins: [],

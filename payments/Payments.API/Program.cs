@@ -110,7 +110,9 @@ app.MapPost("/login", async (LoginRequest login, UserRepository repo) =>
             id = user.Id,
             userName = user.UserName,
             emailAddress = user.EmailAddress,
-            roles = user.Roles
+            roles = user.Roles,
+            loanAccounts = user.LoanAccounts,
+            paymentAccounts = user.PaymentAccounts
         },
         token = jwt
     });

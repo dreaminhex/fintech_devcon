@@ -13,12 +13,18 @@ export default function App() {
         <img
           src="/banner.png"
           alt="Banner"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover opacity-30"
         />
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-          <h1 className="text-3xl font-bold text-zinc-400 tracking-wider drop-shadow">
-            FINTECH FINANCIAL SERVICES
-          </h1>
+          <div className="relative">
+            <h1
+              className="text-5xl font-extrabold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-400 to-purple-500 drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+            >
+              VALTAY FINANCIAL SERVICES
+            </h1>
+            <div className="absolute inset-0 blur-xl opacity-70 bg-gradient-to-r from-blue-400 to-purple-500 -z-10" />
+          </div>
+
         </div>
       </div>
 
