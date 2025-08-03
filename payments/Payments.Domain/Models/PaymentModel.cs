@@ -7,11 +7,14 @@ public class PaymentModel
     [JsonPropertyName("paymentid")]
     public long PaymentId { get; set; }
 
-    [JsonPropertyName("paytoaccount")]
-    public string PayToAccountNumber { get; set; } = "";
+    [JsonPropertyName("userid")]
+    public string UserId { get; set; } = "";
 
-    [JsonPropertyName("payfromaccount")]
-    public string PayFromAccountNumber { get; set; } = "";
+    [JsonPropertyName("loanid")]
+    public string LoanId { get; set; } = "";
+
+    [JsonPropertyName("accounttoken")]
+    public string AccountToken { get; set; } = "";
 
     [JsonPropertyName("amount")]
     public decimal PaymentAmount { get; set; }

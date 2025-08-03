@@ -6,7 +6,8 @@ db.users.insertMany([
         userName: "Carl",
         emailAddress: "carl@dungeon",
         password: "DammitDonut",
-        accounts: ["CL-1024582-A", "CL-1024582-B"],
+        loanAccounts: ["CL-1024582-A", "CL-1024582-B"],
+        paymentAccounts: ['a202143cf223f44b3c9449f810e4789a900376af269464037d6d7f0724b71cc1', '20589548633df4b041d7bb115487abeb390c5445559234c29b25fa8e82ac1bb2'],
         roles: ["Auditor"]
     },
     {
@@ -14,7 +15,8 @@ db.users.insertMany([
         userName: "Katia",
         emailAddress: "katia@daughters",
         password: "EvaSucks",
-        accounts: ["KT-1058789-A"],
+        loanAccounts: ["KT-1058789-A"],
+        paymentAccounts: ['6199d15034c77723a36215601cbb2d8ccef56517b936d1fa7f0bbc9d7b53da06'],
         roles: ["Readonly"]
     },
     {
@@ -22,7 +24,8 @@ db.users.insertMany([
         userName: "Mordecai",
         emailAddress: "mordecai@managers",
         password: "Alchemy4Ever",
-        accounts: ["MD-1089865-A"],
+        loanAccounts: ["MD-1089865-A"],
+        paymentAccounts: ['8de5dae600b5b868dfb4c7e16b3eb2e36825287a2cce075a9cffa70dab00aed2'],
         roles: ["Admin"]
     },
     {
@@ -30,7 +33,8 @@ db.users.insertMany([
         userName: "Donut",
         emailAddress: "donut@princessposse",
         password: "Ferdinand",
-        accounts: ["DN-1096587-A", "DN-1096587-B"],
+        loanAccounts: ["DN-1096587-A", "DN-1096587-B"],
+        paymentAccounts: ['394886d5430248d56875ebdf019ab4e8b1e5469a6251b0b9b6bd91c93dff114e'],
         roles: ["Customer"]
     }
 ]);

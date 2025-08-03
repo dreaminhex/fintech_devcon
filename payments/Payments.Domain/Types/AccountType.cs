@@ -2,6 +2,6 @@ namespace Payments.Domain.Types;
 
 public enum AccountType
 {
-    PayFrom = 1,
-    PayTo = 2
+    ACH = 1,
+    Card = 2
 }

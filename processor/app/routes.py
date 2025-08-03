@@ -1,71 +1,130 @@
 from ariadne import graphql_sync
 from flask import request, jsonify, send_from_directory
+from datetime import datetime, timezone
 
 def register_routes(app):
-    # REST payment route
+
+    # Post a payment to a loan
     @app.route("/payment", methods=["POST"])
     def create_payment():
         from .models import Payment
         data = request.json
         payment = Payment(
-            user_id=data["user_id"],
-            email_address=data.get("email_address"),
+            userid=data["userid"],
             amount=data["amount"],
-            account_number=data["account_number"]
+            loanid=data["loanid"],
+            accounttoken=data["accounttoken"],
+            paymentdate=datetime.now(timezone.utc)
         )
         from .db import db
         db.session.add(payment)
         db.session.commit()
         return jsonify({"status": "ok", "id": payment.id})
 
-    # REST get account by number route
+    # Get an account by account id
     @app.route("/account", methods=["GET"])
-    def account_by_number():
-        accountnumber = request.args.get("accountnumber")
-        if not accountnumber:
-            return jsonify({"error": "Missing accountnumber parameter"}), 400
+    def account_by_id():
+        accountid = request.args.get("accountid")
+        if not accountid:
+            return jsonify({"error": "Missing accountid parameter"}), 400
         
         from .db import db
         from .models import Account
-        account = db.session.query(Account).filter_by(accountnumber=accountnumber).first()
+        account = db.session.query(Account).filter_by(accountid=accountid).first()
         if not account:
             return jsonify({"error": "Account not found"}), 404
 
         return jsonify({
             "accountid": account.accountid,
-            "accountnumber": account.accountnumber,
+            "accounttoken": account.accounttoken,
             "accountname": account.accountname,
+            "accountlast4": account.accountlast4,
+            "accountexpmonth": account.accountexpmonth,
+            "accountexpyear": account.accountexpyear,
+            "accounttype": account.accounttype,
             "balance": account.balance
         })
 
     @app.route("/account", methods=["POST"])
-    def accounts_by_numbers():
+    def accounts_by_accountids():
         data = request.get_json()
         
-        if not data or "accountnumbers" not in data:
-            return jsonify({"error": "Missing accountnumbers in request body"}), 400
+        if not data or "accountids" not in data:
+            return jsonify({"error": "Missing accountids in request body"}), 400
 
-        accountnumbers = data["accountnumbers"]
+        accountids = data["accountids"]
 
-        if not isinstance(accountnumbers, list) or not all(isinstance(a, str) for a in accountnumbers):
-            return jsonify({"error": "accountnumbers must be a list of strings"}), 400
+        if not isinstance(accountids, list) or not all(isinstance(a, str) for a in accountids):
+            return jsonify({"error": "accountids must be a list of strings"}), 400
 
         from .db import db
         from .models import Account
         accounts = (
             db.session.query(Account)
-            .filter(Account.accountnumber.in_(accountnumbers))
+            .filter(Account.accountid.in_(accountids))
             .all()
         )
 
         return jsonify([
             {
-                "accountid": acct.accountid,
-                "accountnumber": acct.accountnumber,
-                "accountname": acct.accountname,
-                "balance": acct.balance
+                "accountid": account.accountid,
+                "accounttoken": account.accounttoken,
+                "accountname": account.accountname,
+                "accountlast4": account.accountlast4,
+                "accountexpmonth": account.accountexpmonth,
+                "accountexpyear": account.accountexpyear,
+                "accounttype": account.accounttype,
+                "balance": account.balance
             }
-            for acct in accounts
+            for account in accounts
+        ])
+    
+    @app.route("/loan", methods=["GET"])
+    def loan_by_loanid():
+        loanid = request.args.get("loanid")
+        if not loanid:
+            return jsonify({"error": "Missing loanid parameter"}), 400
+        
+        from .db import db
+        from .models import Loan
+        loan = db.session.query(Loan).filter_by(loanid=loanid).first()
+        if not loan:
+            return jsonify({"error": "Loan not found"}), 404
+
+        return jsonify(
+            {
+                "loanid": loan.loanid,
+                "loannumber": loan.loannumber,
+                "loanname": loan.loanname,
+                "balance": loan.balance
+            }
+        )
+    
+    @app.route("/payments", methods=["GET"])
+    def payments_by_loanid():
+        loanid = request.args.get("loanid")
+        if not loanid:
+            return jsonify({"error": "Missing loanid parameter"}), 400
+        
+        from .db import db
+        from .models import Loan
+        loan = db.session.query(Loan).filter_by(loanid=loanid).first()
+        if not loan:
+            return jsonify({"error": "Loan not found"}), 404
+
+        from .models import Payment
+        payments = db.session.query(Payment).filter_by(loanid=loanid).first()
+
+        return jsonify([
+            {
+                "paymentid": payment.paymentid,
+                "userid": payment.userid,
+                "amount": payment.amount,
+                "loanid": payment.loanid,
+                "accounttoken": payment.accounttoken,
+                "paymentdate": payment.paymentdate
+            }
+            for payment in payments
         ])
 
     # GraphQL Playground

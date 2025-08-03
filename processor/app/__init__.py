@@ -14,7 +14,7 @@ schema = make_federated_schema(type_defs, *resolvers)
 
 # When the app starts, publish/update the schema in Redis
 def publish_schema_to_redis(schema):
-    redis_host = os.getenv("REDIS_HOST", "redis")
+    redis_host = os.getenv("REDIS_HOST", "localhost") 
     redis_port = int(os.getenv("REDIS_PORT", 6379))
     service_name = os.getenv("SERVICE_NAME", "processor")
     service_port = os.getenv("PORT", "80")

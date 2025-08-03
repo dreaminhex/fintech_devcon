@@ -43,15 +43,12 @@ services:
       - mongo
       - redis
 
-  # .NET 9 Payments UI (Blazor)
+  # Payments UI (React/Vite)
   payments-ui:
     container_name: dotnet-payments-ui
     build:
       context: .
-      dockerfile: payments/Payments.UI/Dockerfile
-    environment:
-      - ASPNETCORE_URLS=http://+:80
-      - ASPNETCORE_ENVIRONMENT=Docker
+      dockerfile: payments/payments-ui/Dockerfile
     ports:
       - "2023:80"
     depends_on:
@@ -61,6 +58,8 @@ services:
   processor:
     container_name: python-processor
     build: ./processor
+    environment:
+      - REDIS_HOST=gateway-redis
     ports:
       - "2024:2024"
     depends_on:

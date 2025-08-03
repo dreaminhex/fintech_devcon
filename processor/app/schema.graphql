@@ -1,19 +1,34 @@
+scalar DateTime
+
 type Query {
-  payments: [Payment!]!
-  accounts: [Account!]!
+  payments: [Payment!]
+  accounts: [Account!]
+  loans: [Loan!]
 }
 
 type Payment {
-  paymentid: ID!
-  userid: String!
-  amount: Float!
-  accountnumber: String!
-  paymentdate: String!
+  paymentid: ID
+  userid: String
+  amount: Float
+  loanid: String
+  accounttoken: String
+  paymentdate: DateTime
 }
 
 type Account {
   accountid: ID!
-  accountnumber: String!
-  accountname: String!
-  balance: Float!
+  accounttoken: String
+  accountname: String
+  accountlast4: Int
+  accountexpmonth: Int
+  accountexpyear: Int
+  accounttype: Int
+  balance: Float
+}
+
+type Loan {
+  loanid: ID
+  loannumber: String
+  loanname: String
+  balance: Float
 }

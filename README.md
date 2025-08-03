@@ -139,7 +139,7 @@ For this demonstration, our Python service will use a virtual environment (`venv
 1. From the `/processor` directory:
 1. If you haven't done this yet, create a virtual env: `python -m venv venv`
 1. Activate it
-    - Windows Powershell: `.venv\Scripts\Activate.ps1`
+    - Windows Powershell: `venv\Scripts\Activate.ps1`
     - Windows Command Prompt: `venv\Scripts\activate`
     - MacOS (zsh): `source venv/bin/activate`
     - Linux: `source venv/bin/activate`
@@ -250,7 +250,6 @@ This is so that the Docker containers will reference the services in other Docke
 ### .NET Libraries Used
 
 - GraphQL.NET
-- Blazor
 - MongoDB.Driver
 - Microsoft WebAPI
 - StackExchange.Redis
