@@ -96,31 +96,43 @@ def register_routes(app):
                 "loanid": loan.loanid,
                 "loannumber": loan.loannumber,
                 "loanname": loan.loanname,
-                "balance": loan.balance
+                "balance": loan.balance,
+                "lastpaymentdate": loan.lastpaymentdate,
+                "nextpaymentdate": loan.nextpaymentdate,
+                "lastpaymentamount": loan.lastpaymentamount,
+                "rate": loan.rate,
+                "term": loan.term,
             }
         )
     
     @app.route("/payments", methods=["GET"])
-    def payments_by_loanid():
-        loanid = request.args.get("loanid")
-        if not loanid:
-            return jsonify({"error": "Missing loanid parameter"}), 400
+    def payments_by_loannumber():
+        loannumber = request.args.get("loannumber")
+        if not loannumber:
+            return jsonify({"error": "Missing loannumber parameter"}), 400
         
         from .db import db
         from .models import Loan
-        loan = db.session.query(Loan).filter_by(loanid=loanid).first()
+        loan = db.session.query(Loan).filter_by(loannumber=loannumber).first()
         if not loan:
             return jsonify({"error": "Loan not found"}), 404
 
         from .models import Payment
-        payments = db.session.query(Payment).filter_by(loanid=loanid).first()
+        payments = (
+            db.session.query(Payment)
+            .filter_by(loannumber=loannumber)
+            .order_by(Payment.paymentdate.desc())
+            .all()
+        )
 
         return jsonify([
             {
                 "paymentid": payment.paymentid,
                 "userid": payment.userid,
-                "amount": payment.amount,
-                "loanid": payment.loanid,
+                "loannumber": payment.loannumber,
+                "principal": payment.principal,
+                "interest": payment.interest,
+                "total": payment.total,
                 "accounttoken": payment.accounttoken,
                 "paymentdate": payment.paymentdate
             }

@@ -7,16 +7,18 @@ type Query {
 }
 
 type Payment {
-  paymentid: ID
-  userid: String
-  amount: Float
-  loanid: String
-  accounttoken: String
-  paymentdate: DateTime
+    paymentid: ID
+    userid: String
+    loannumber: String
+    accounttoken: String
+    principal: Float
+    interest: Float
+    total: Float
+    paymentdate: DateTime
 }
 
 type Account {
-  accountid: ID!
+  accountid: ID
   accounttoken: String
   accountname: String
   accountlast4: Int
@@ -31,4 +33,9 @@ type Loan {
   loannumber: String
   loanname: String
   balance: Float
+  lastpaymentdate: DateTime
+  nextpaymentdate: DateTime
+  lastpaymentamount: Float
+  rate: Float
+  term: Int
 }

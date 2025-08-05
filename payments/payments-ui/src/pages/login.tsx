@@ -34,13 +34,13 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex h-screen items-center justify-center bg-zinc-950 text-white">
+        <div className="mt-45 flex items-center justify-center bg-zinc-950 text-white">
             <form
-                onSubmit={handleSubmit}
-                className="w-128 bg-zinc-900 p-8 rounded-xl shadow-lg border border-zinc-700"
+                onSubmit={handleSubmit} style={{ borderColor: "#7f0c9c" }}
+                className="w-[81%] bg-zinc-900 p-8 rounded-xl shadow-lg border-3"
             >
-                <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-indigo-400 via-violet-500 via-blue-500 to-emerald-400 bg-clip-text text-transparent">
-                    LOGIN TO FINTECH PAYMENTS
+                <h2 className="text-3xl font-bold text-center mb-3 bg-gradient-to-r from-indigo-400 via-violet-500 via-blue-500 to-emerald-400 bg-clip-text text-transparent">
+                    LOGIN TO VALTAY FINANCIAL
                 </h2>
                 <label className="block mb-2 text-sm font-medium text-zinc-300">
                     Email Address

@@ -154,6 +154,10 @@ body {
   align-self: center;
 }
 
+.title{
+  font-family: 'Abril Fatface', cursive;
+}
+
 /* Blockquote header */
 .blockquote h1 {
   font-family: 'Abril Fatface', cursive;
@@ -189,7 +193,7 @@ body {
   content: "";
   position: absolute;
   width: 80px;
-  border: 6px solid #000000;
+  border: 6px solid oklch(0.141 0.005 285.823);
   bottom: -3px;
   left: 50px;
   z-index: 2;
@@ -206,16 +210,6 @@ body {
 /* Blockquote subheader */
 .blockquote h4 {
   position: relative;
-  color: #ffffff;
-  font-size: 1.8rem;
-  font-weight: 400;
-  line-height: 1.2;
-  margin: 0;
-  padding-top: 15px;
-  z-index: 1;
-  margin-left: 150px;
-  padding-left: 12px;
-  font-family: 'Mona Sans';
 }
 
 .blockquote h4:first-letter {

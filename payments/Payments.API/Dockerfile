@@ -2,11 +2,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy projects using paths relative to root (context: .)
+# Copy project files (relative to repo root)
 COPY payments/Payments.Domain/ ./Payments.Domain/
 COPY payments/Payments.API/ ./Payments.API/
 
-# Restore and build
+# Restore and publish
 RUN dotnet restore ./Payments.API/Payments.API.csproj
 RUN dotnet publish ./Payments.API/Payments.API.csproj -c Release -o /app/publish
 

@@ -60,6 +60,7 @@ services:
     build: ./processor
     environment:
       - REDIS_HOST=gateway-redis
+      - DATABASE_URI=postgresql://fintech:devcon@postgres:5432/payments
     ports:
       - "2024:2024"
     depends_on:

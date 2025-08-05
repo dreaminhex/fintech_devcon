@@ -1,4 +1,4 @@
-query {
+query GetUser {
   users(
     where: "emailAddress == \"carl@dungeon\"",
     sort: "userName",
@@ -11,7 +11,7 @@ query {
   }
 }
 
-query {
+query GetUsers {
   users(
     where: "emailAddress.Contains(\"carl\") and userName != \"donut\"",
     sort: "userName descending",
@@ -24,7 +24,7 @@ query {
   }
 }
 
-query {
+query GetUsers {
   users(
     where: "emailAddress.Contains(\"a\")",
     sort: "userName descending",
@@ -37,3 +37,27 @@ query {
   }
 }
 
+query GetLoans {
+  loans {
+    loanid
+    loannumber
+    loanname
+    balance
+    lastpaymentdate
+    nextpaymentdate
+    lastpaymentamount
+    rate
+    term
+  }
+}
+
+query GetPayments {
+  loans {
+    paymentid
+    userid
+    amount
+    loanid
+    accounttoken
+    paymentdate
+  }
+}

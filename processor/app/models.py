@@ -8,6 +8,11 @@ class Loan(db.Model):
     loannumber = db.Column(String, nullable=False, unique=True)
     loanname = db.Column(String, nullable=False)
     balance = db.Column(Numeric(12, 2), nullable=False, default=0.00)
+    lastpaymentdate = db.Column(DateTime, default=datetime)
+    nextpaymentdate = db.Column(DateTime, default=datetime)
+    lastpaymentamount = db.Column(Numeric(12, 2), nullable=False, default=0.00)
+    rate = db.Column(Numeric(8, 4), nullable=False, default=0.00)
+    term = db.Column(Numeric(4, 0), nullable=False, default=0.00)
 
 class Account(db.Model):
     __tablename__ = 'accounts'
@@ -24,7 +29,9 @@ class Payment(db.Model):
     __tablename__ = 'payments'
     paymentid = db.Column(BigInteger, primary_key=True)
     userid = db.Column(String, nullable=False)
-    amount = db.Column(Numeric, nullable=False)
-    loanid = db.Column(String, nullable=False)
+    loannumber = db.Column(String, nullable=False)
     accounttoken = db.Column(String, nullable=False)
+    principal = db.Column(Numeric(12, 2), nullable=False, default=0.00)
+    interest = db.Column(Numeric(12, 2), nullable=False, default=0.00)
+    total = db.Column(Numeric(12, 2), nullable=False, default=0.00)
     paymentdate = db.Column(DateTime, default=datetime)

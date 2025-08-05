@@ -6,8 +6,8 @@ db.users.insertMany([
         userName: "Carl",
         emailAddress: "carl@dungeon",
         password: "DammitDonut",
-        loanAccounts: ["CL-1024582-A", "CL-1024582-B"],
-        paymentAccounts: ['a202143cf223f44b3c9449f810e4789a900376af269464037d6d7f0724b71cc1', '20589548633df4b041d7bb115487abeb390c5445559234c29b25fa8e82ac1bb2'],
+        loanAccounts: ["CL-ZYCWTIQJ-A", "CL-ZYCWTIQJ-B", "CL-ZYCWTIQJ-C"],
+        paymentAccounts: ['1ec9b64a-8714-4acc-9bc6-975ce42e78d3', '30f9119e-11ce-4555-8fdf-3da8b3380a87'],
         roles: ["Auditor"]
     },
     {
@@ -15,8 +15,8 @@ db.users.insertMany([
         userName: "Katia",
         emailAddress: "katia@daughters",
         password: "EvaSucks",
-        loanAccounts: ["KT-1058789-A"],
-        paymentAccounts: ['6199d15034c77723a36215601cbb2d8ccef56517b936d1fa7f0bbc9d7b53da06'],
+        loanAccounts: ["KA-HR5XFF0T-A", "KA-HR5XFF0T-B"],
+        paymentAccounts: ['173c8cc6-c562-48e1-9307-d78fa170ba77', 'b91a11c2-f760-4837-ad44-486073e010ce'],
         roles: ["Readonly"]
     },
     {
@@ -24,8 +24,8 @@ db.users.insertMany([
         userName: "Mordecai",
         emailAddress: "mordecai@managers",
         password: "Alchemy4Ever",
-        loanAccounts: ["MD-1089865-A"],
-        paymentAccounts: ['8de5dae600b5b868dfb4c7e16b3eb2e36825287a2cce075a9cffa70dab00aed2'],
+        loanAccounts: ["MI-DBDW2PCN-A", "MI-DBDW2PCN-B"],
+        paymentAccounts: ['e49c4f34-65dd-420d-b6ef-b5972a2c896a','7db3d36e-6723-442d-8360-0f8f9d821eb1'],
         roles: ["Admin"]
     },
     {
@@ -33,8 +33,8 @@ db.users.insertMany([
         userName: "Donut",
         emailAddress: "donut@princessposse",
         password: "Ferdinand",
-        loanAccounts: ["DN-1096587-A", "DN-1096587-B"],
-        paymentAccounts: ['394886d5430248d56875ebdf019ab4e8b1e5469a6251b0b9b6bd91c93dff114e'],
+        loanAccounts: ["DT-1MKFAZZ8-A", "DN-1MKFAZZ8-B"],
+        paymentAccounts: ['1a4bdae1-add3-427a-adbe-d7a57d44450b', '930adb11-1683-4c5e-9b8d-7c9363d6e21f','0c51c4d3-aa4f-465b-8cea-df20b381f749'],
         roles: ["Customer"]
     }
 ]);
