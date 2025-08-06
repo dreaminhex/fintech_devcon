@@ -2,18 +2,141 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta charset="UTF-8" />
+    <title>VALTAY SYSTEMS LOGIN</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background-color: #121212;
+            border: 1px solid #2c2c2c;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            font-size: 1.25rem;
+            color: #00ffff;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 8px #00ffffa0, 0 0 4px #00c0c0;
+            border-bottom: 1px solid #2a2a2a;
+            padding-bottom: 1rem;
+        }
+
+        .sub-header {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: -1rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            color: #eee;
+            transition: border 0.2s ease;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #00ffff;
+            outline: none;
+            box-shadow: 0 0 4px #00ffff88;
+        }
+
+        input::placeholder {
+            color: #666;
+        }
+
+        button {
+            padding: 0.75rem;
+            border: none;
+            background-color: #00bcd4;
+            color: #000;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0097a7;
+            box-shadow: 0 0 10px #00ffff80;
+        }
+
+        #error {
+            color: #ff5252;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #444;
+        }
+
+        footer span {
+            font-family: monospace;
+            font-size: 0.65rem;
+            color: #666;
+        }
+    </style>
 </head>
 
 <body>
-    <h2>Login</h2>
-    <form id="loginForm">
-        <input name="email" type="email" placeholder="Email" required>
-        <input name="password" type="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-    </form>
-    <p id="error" style="color: red;"></p>
+    <div class="login-container">
+        <div class="header">VALTAY SYSTEMS LOGIN</div>
+        <div class="sub-header">AUTHORIZED PERSONNEL ONLY</div>
+
+        <form id="loginForm">
+            <input name="email" type="email" placeholder="Employee Email" required />
+            <input name="password" type="password" placeholder="Access Key" required />
+            <button type="submit">Authenticate</button>
+        </form>
+
+        <p id="error"></p>
+
+        <footer>
+            © 2025 Valtay Corporation<br />
+            <span>v-secure-node α1.2.7</span>
+        </footer>
+    </div>
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -22,24 +145,21 @@
             const email = e.target.email.value;
             const password = e.target.password.value;
 
-            const res = await fetch('http://dotnet-payments-api:2022/login', {
+            const res = await fetch('http://localhost:2022/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ emailAddress: email, password })
             });
 
             if (!res.ok) {
-                document.getElementById('error').textContent = 'Login failed';
+                document.getElementById('error').textContent = 'Access Denied';
                 return;
             }
 
             const data = await res.json();
             const token = data.token;
 
-            // Store the token in localStorage
             localStorage.setItem('jwt', token);
-
-            // Redirect to GraphQL UI
             window.location.href = '/graphql';
         });
     </script>

@@ -40,7 +40,7 @@ export default function LoginPage() {
                 className="w-[81%] bg-zinc-900 p-8 rounded-xl shadow-lg border-3"
             >
                 <h2 className="text-3xl font-bold text-center mb-3 bg-gradient-to-r from-indigo-400 via-violet-500 via-blue-500 to-emerald-400 bg-clip-text text-transparent">
-                    LOGIN TO VALTAY FINANCIAL
+                    LOGIN TO VALTAY FINANCIAL CORPORATION
                 </h2>
                 <label className="block mb-2 text-sm font-medium text-zinc-300">
                     Email Address

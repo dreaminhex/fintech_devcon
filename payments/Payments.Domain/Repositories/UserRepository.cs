@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 public class UserRepository
 {
-    private readonly IMongoCollection<UserModel> users;
+    public readonly IMongoCollection<UserModel> users;
 
     public UserRepository(IOptions<MongoSettings> options)
     {

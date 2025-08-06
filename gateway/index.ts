@@ -2,6 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { composeServices } from '@apollo/composition';
 import { parse } from 'graphql';
 import express from 'express';
@@ -12,8 +13,9 @@ import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import path from 'path';
+import http from 'http';
 
-const JWT_SECRET = '688159e9-ea80-800a-ab08-8c51afaec3c0'; // Must match .NET key, should be stored as a secret in real app.
+const JWT_SECRET = '688159e9-ea80-800a-ab08-8c51afaec3c0'; // Store securely in real apps
 const redis = new Redis("gateway-redis");
 const PORT = 2025;
 
@@ -22,14 +24,13 @@ let currentHash = '';
 
 /**
  * Get the services (SDL, URL) federated to Redis.
- * @returns Array of services.
  */
 async function loadFederatedServices() {
     const keys = await redis.keys('gateway:*:schema');
     const services = [];
 
     for (const key of keys) {
-        const name = key.split(':')[1]; // e.g. "gateway:processor:schema" -> "processor"
+        const name = key.split(':')[1];
         const sdl = await redis.get(key);
         const url = await redis.get(`gateway:${name}:url`);
 
@@ -49,13 +50,11 @@ async function loadFederatedServices() {
 }
 
 /**
- * Create the GraphQL gateway, stitch the schemas, apply auth, and add endpoints.
- * @param app The Express webserver
+ * Create or update the Apollo Gateway and server.
  */
-async function createGatewayAndServer(app: express.Express) {
+async function createGatewayAndServer(app: express.Express, httpServer: http.Server) {
     const services = await loadFederatedServices();
 
-    // Cache the service URLs
     const serviceUrlMap: Record<string, string> = {};
     for (const svc of services) {
         serviceUrlMap[svc.name] = svc.url;
@@ -68,20 +67,18 @@ async function createGatewayAndServer(app: express.Express) {
         throw new Error('Composition failed');
     }
 
-    // Check for changes
     const newHash = computeHash(compositionResult.supergraphSdl);
 
     if (newHash === currentHash) {
-        return; // No change
+        return;
     }
 
     currentHash = newHash;
-
     console.log('🔁 Reloading schema...');
 
     const gateway = new ApolloGateway({
         supergraphSdl: async () => ({
-            id: Buffer.from(Date.now().toString()).toString('base64'), // A temp unique ID to track schema refreshes
+            id: Buffer.from(Date.now().toString()).toString('base64'),
             supergraphSdl: compositionResult.supergraphSdl,
         }),
         buildService({ name }) {
@@ -104,31 +101,30 @@ async function createGatewayAndServer(app: express.Express) {
                     }
                 }
             });
-
         }
     });
 
     const newServer = new ApolloServer({
         gateway,
         introspection: true,
-        plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+        plugins: [
+            ApolloServerPluginLandingPageLocalDefault({ embed: true }),
+            ApolloServerPluginDrainHttpServer({ httpServer }),
+        ],
     });
 
     await newServer.start();
 
     if (server) {
-        await server.stop();
+        await server.stop(); // Gracefully stop old server
     }
 
-    // Add GraphQL endpoint, check JWT token for roles
     app.use('/graphql', cors(), bodyParser.json(), expressMiddleware(newServer, {
         context: async ({ req }) => {
             const rawAuth = req.headers['authorization'];
             const auth = Array.isArray(rawAuth) ? rawAuth[0] : rawAuth || '';
 
             const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
-
-            // Fallback to localStorage if running in browser and available.
             const localJwt = req.headers['x-jwt'];
             const jwtToken = token || localJwt;
 
@@ -145,7 +141,7 @@ async function createGatewayAndServer(app: express.Express) {
                 }
             }
 
-            return { user };
+            return { user, req };
         }
     }));
 
@@ -154,45 +150,55 @@ async function createGatewayAndServer(app: express.Express) {
 }
 
 /**
- * Start the GraphQL and Voyager servers.
+ * Start the web server and begin polling Redis for updates.
  */
 async function start() {
     const app = express();
-
     app.use(express.json());
-
-    // Serve the login page
     app.use(express.static(path.join(__dirname, 'public')));
-
-    // Login route (serves index.html from login)
     app.get('/', (_, res) => {
         res.sendFile(path.join(__dirname, 'public', 'index.html'));
     });
 
     app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
 
-    await createGatewayAndServer(app);
+    const httpServer = http.createServer(app);
 
-    app.listen(PORT, () => {
+    await createGatewayAndServer(app, httpServer);
+
+    httpServer.listen(PORT, () => {
         console.log(`🚀 Gateway: http://localhost:${PORT}/graphql`);
         console.log(`🛰 Voyager: http://localhost:${PORT}/voyager`);
     });
 
-    // Hot reload every 10 seconds
+    // Reload schema every 10s
     setInterval(() => {
-        createGatewayAndServer(app).catch(err => {
+        createGatewayAndServer(app, httpServer).catch(err => {
             console.error('Schema reload error:', err.message);
         });
     }, 10000);
+
+    // Graceful shutdown on SIGINT/SIGTERM
+    process.on('SIGINT', async () => {
+        console.log('🛑 SIGINT received. Shutting down...');
+        await server?.stop();
+        httpServer.close(() => process.exit(0));
+    });
+
+    process.on('SIGTERM', async () => {
+        console.log('🛑 SIGTERM received. Shutting down...');
+        await server?.stop();
+        httpServer.close(() => process.exit(0));
+    });
+}
+
+/**
+ * Create a hash of SDL string.
+ */
+function computeHash(sdl: string): string {
+    return crypto.createHash('sha256').update(sdl).digest('hex');
 }
 
 start().catch(err => {
     console.error('Fatal startup error:', err.message);
 });
-
-/**
- * Helper function to create a hash.
- */
-function computeHash(sdl: string): string {
-    return crypto.createHash('sha256').update(sdl).digest('hex');
-}

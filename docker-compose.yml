@@ -1,7 +1,7 @@
 services:
   # Mongo Database
   mongo:
-    container_name: payments-mongo
+    container_name: payments-mongo-db
     image: mongo:latest
     ports:
       - "27017:27017"
@@ -10,7 +10,7 @@ services:
 
   # Postgres Database
   postgres:
-    container_name: processor-postgres
+    container_name: processor-postgres-db
     image: postgres:latest
     environment:
       POSTGRES_USER: fintech
@@ -45,18 +45,18 @@ services:
 
   # Payments UI (React/Vite)
   payments-ui:
-    container_name: dotnet-payments-ui
+    container_name: react-payments-ui
     build:
-      context: .
-      dockerfile: payments/payments-ui/Dockerfile
+      context: payments/payments-ui
+      dockerfile: Dockerfile
     ports:
-      - "2023:80"
+      - "2023:2023"
     depends_on:
       - payments-api
 
   # Python API Service
   processor:
-    container_name: python-processor
+    container_name: python-processor-api
     build: ./processor
     environment:
       - REDIS_HOST=gateway-redis
@@ -69,7 +69,7 @@ services:
 
   # Node.js/Typescript Gateway
   gateway:
-    container_name: graphql-gateway
+    container_name: graphql-gateway-ui
     build:
       context: .
       dockerfile: gateway/Dockerfile

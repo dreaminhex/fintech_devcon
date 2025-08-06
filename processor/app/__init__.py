@@ -20,7 +20,7 @@ def publish_schema_to_redis(schema):
     service_port = os.getenv("PORT", "80")
     schema_key = f"gateway:{service_name}:schema"
     url_key = f"gateway:{service_name}:url"
-    service_url = f"python-processor:{service_port}/graphql"
+    service_url = f"python-processor-api:{service_port}/graphql"
 
     try:
         r = redis.Redis(host=redis_host, port=redis_port, decode_responses=True)

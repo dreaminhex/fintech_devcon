@@ -1,42 +1,27 @@
-query GetUser {
-  users(
-    where: "emailAddress == \"carl@dungeon\"",
-    sort: "userName",
-    skip: 0,
-    take: 10
-  ) {
+# Payments API
+query GetUserByEmail {
+  users(where: { emailAddress: { eq: "carl@dungeon" } }) {
     id
-    emailAddress,
     userName
-  }
-}
-
-query GetUsers {
-  users(
-    where: "emailAddress.Contains(\"carl\") and userName != \"donut\"",
-    sort: "userName descending",
-    skip: 0,
-    take: 10
-  ) {
-    id
     emailAddress
-    userName
+    loanAccounts
+    paymentAccounts
+    roles
   }
 }
 
-query GetUsers {
-  users(
-    where: "emailAddress.Contains(\"a\")",
-    sort: "userName descending",
-    skip: 0,
-    take: 2
-  ) {
-    id
-    emailAddress
-    userName
+# Processor API
+query GetAccounts {
+  accounts {
+    accountid
+    accounttoken
+    accountname
+    accountlast4
+    balance
   }
 }
 
+# Processor API
 query GetLoans {
   loans {
     loanid
@@ -51,12 +36,15 @@ query GetLoans {
   }
 }
 
+# Python API
 query GetPayments {
-  loans {
+  payments {
     paymentid
     userid
-    amount
-    loanid
+    principal,
+    interest,
+    total,
+    loannumber
     accounttoken
     paymentdate
   }

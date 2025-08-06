@@ -200,6 +200,7 @@ Now you can browse to [http://localhost:2024/graphql](http://localhost:2024/grap
 - GraphiQL
 - SQLAlchemy
 - Ariadne
+- flasgger
 
 ## Step 3: The .NET Services
 

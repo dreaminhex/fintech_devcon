@@ -5,19 +5,18 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GraphQL" Version="8.5.0" />
-    <PackageReference Include="GraphQL.MicrosoftDI" Version="8.5.0" />
-    <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="8.3.0" />
-    <PackageReference Include="GraphQL.Server.Ui.GraphiQL" Version="8.3.0" />
-    <PackageReference Include="GraphQL.Server.Ui.Playground" Version="8.3.0" />
-    <PackageReference Include="GraphQL.SystemTextJson" Version="8.5.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
+    <PackageReference Include="HotChocolate.ApolloFederation" Version="15.1.8" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.8" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="15.1.8" />
+    <PackageReference Include="HotChocolate.AspNetCore.Voyager" Version="10.5.5" />
+    <PackageReference Include="HotChocolate.Data" Version="15.1.8" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.3.0" />
-    <PackageReference Include="MongoDB.Driver" Version="3.4.1" />
+    <PackageReference Include="MongoDB.Driver" Version="3.4.2" />
     <PackageReference Include="StackExchange.Redis" Version="2.8.58" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.0" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.6" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Payments.Domain\Payments.Domain.csproj" />

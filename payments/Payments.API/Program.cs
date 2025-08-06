@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using GraphQL;
 using GraphQL.Types;
+using HotChocolate.AspNetCore.Voyager;
+using HotChocolate.Execution;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Payments.API.Models;
@@ -25,45 +27,16 @@ builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("Redi
 builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddSingleton<UserType>();
 builder.Services.AddSingleton<UserQuery>();
-builder.Services.AddSingleton<ISchema, UserSchema>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add GraphQL.NET services
-builder.Services.AddGraphQL(g =>
-{
-    g.AddSystemTextJson();
-    g.AddFederation(version: "2.3");
-    g.AddGraphTypes(typeof(UserQuery).Assembly);
-    g.AddSchema<UserSchema>();
-    g.AddUserContextBuilder(httpContext =>
-    {
-        var context = new Dictionary<string, object?>();
-
-        var authHeader = httpContext.Request.Headers.Authorization.FirstOrDefault();
-        if (!string.IsNullOrWhiteSpace(authHeader) && authHeader.StartsWith("Bearer "))
-        {
-            var token = authHeader["Bearer ".Length..];
-
-            var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken(token);
-
-            var roles = jwt.Claims
-                .Where(c => c.Type == "role" || c.Type == "roles")
-                .Select(c => c.Value)
-                .ToList();
-
-            context["roles"] = string.Join(",", roles);
-
-            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-            if (!string.IsNullOrEmpty(userId))
-            {
-                context["userId"] = userId;
-            }
-        }
-        return context;
-    });
-});
+builder.Services
+    .AddGraphQLServer()
+    .AddAuthorization()
+    .AddQueryType<UserQuery>()
+    .AddApolloFederation()
+    .AddFiltering()
+    .AddSorting();
 
 // Allow any of our services to query this (dev only)
 builder.Services.AddCors(options =>
@@ -118,20 +91,6 @@ app.MapPost("/login", async (LoginRequest login, UserRepository repo) =>
     });
 });
 
-// Keep-alive for GraphiQL to prevent errors
-app.Use(async (context, next) =>
-{
-    if (context.Request.Method == "GET"
-        && context.Request.Path == "/graphql"
-        && !context.Request.Query.ContainsKey("query"))
-    {
-        context.Response.StatusCode = 204;
-        return;
-    }
-
-    await next();
-});
-
 // Configure Swagger
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -141,16 +100,14 @@ app.UseSwaggerUI(c =>
     c.DocumentTitle = "Payments API";
 });
 
-// Configure GraphiQL to use the schema and set the endpoint.
-app.UseGraphQL<ISchema>();
-app.UseGraphQLGraphiQL("/graphiql", new GraphQL.Server.Ui.GraphiQL.GraphiQLOptions
-{
-    GraphQLEndPoint = "/graphql"
-});
-
 // Publish the latest version to Redis.
-var schema = app.Services.GetRequiredService<ISchema>();
 var redisSettings = app.Services.GetRequiredService<IOptions<RedisSettings>>().Value;
-await Publisher.PublishToRedisAsync(schema, redisSettings);
+var executor = await app.Services.GetRequiredService<IRequestExecutorResolver>().GetRequestExecutorAsync();
+var sdl = executor.Schema.ToString(); // Federated SDL
 
-await app.RunAsync();
+await Publisher.PublishToRedisAsync(sdl, redisSettings);
+
+app.MapGraphQL();
+app.UseVoyager();
+
+await app.RunAsync("http://0.0.0.0");
