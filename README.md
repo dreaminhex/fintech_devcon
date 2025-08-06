@@ -36,19 +36,19 @@ So, for any lawyers, attorneys, or armchair architects: DO NOT ATTEMPT TO USE AN
 
 ## Getting Started
 
-For this workshop, all working code is available to you in the `master_2025` branch.
+For this workshop, all working code is available to you in the `main` branch.
 
 ### Clone the Repo
 
 ```bash
 git clone https://github.com/dreaminhex/fintech_devcon.git
 git fetch origin
-git checkout master_2025
+git checkout main
 ```
 
 ### Folder Structure
 
-Open the root folder where you cloned the repo (e.g. `fintect_devcon`) in Visual Studio Code.
+Open the root folder where you cloned the repo (e.g. `fintech_devcon`) in Visual Studio Code.
 
 Your folder structure will look like the following:
 
@@ -63,7 +63,7 @@ Your folder structure will look like the following:
   - 📂 `/Payments.API` — ASP.NET Core Web API  
     - 🐳 `Dockerfile`
   - 📂 `/Payments.Domain` — Shared domain types and models
-  - 📂 `/Payments.UI` — Blazor (Server or WASM) UI  
+  - 📂 `/payments-ui` — React/Vite/Typescript UI 
     - 🐳 `Dockerfile`
 - 📂 `/processor` — Python + PostgreSQL Ariadne API  
   - 🐳 `Dockerfile`
@@ -76,18 +76,19 @@ Your folder structure will look like the following:
 
 ### .NET Payments Services
 
-- 📈 GraphQL UI: [http://localhost:2022/graphiq](http://localhost:2022/graphiql)
-- 🌐 Payments API: [http://localhost:2022/swagger](http://localhost:2022/swagger)
-- 💸 Payments UI: [http://localhost:2023](http://localhost:2023)
+- 📈 GraphQL UI: [GraphQL Nitro](http://localhost:2022/graphql/)
+- 🌐 Payments API: [Swagger](http://localhost:2022/swagger/index.html)
+- 💸 Payments UI: [Valtay Financial](http://localhost:2023)
 
 ### Python Processor Service
 
-- 🐍 GraphQL UI: [http://localhost:2024/graphql](http://localhost:2024/graphql)
+- 🐍 GraphQL UI: [Graphiql UI](http://localhost:2024/graphql)
 
 ### Federated GraphQL Gateway
 
-- 🚀 Gateway: [http://localhost:2025/graphql](http://localhost:2025/graphql)
-- 🛰 Voyager: [http://localhost:2025/voyager](http://localhost:2025/voyager)
+- 🔐 Login: [Authorized Login](http://localhost:2025/)
+- 🚀 Gateway: [Gateway GraphQL](http://localhost:2025/graphql)
+- 🛰 Voyager: [Voyager](http://localhost:2025/voyager)
 
 ## Option A: Cheatcode - Just Start Everything
 
@@ -98,7 +99,7 @@ docker compose build
 docker compose up -d
 ```
 
-This takes around 1–3 minutes (depending on your internet connection and processor speed) to pull all of the required Docker images and startup all services. You're always welcome to do this in advance as the conference's internet connection may be under heavy use.
+This takes around 2-10 minutes (depending on your internet connection and processor speed) to pull all of the required Docker images and startup all services. You're always welcome to do this in advance as the conference's internet connection may be under heavy use.
 
 Once done, open a browser to [http://localhost:2025/graphql](http://localhost:2025/graphql) and start running queries.
 
