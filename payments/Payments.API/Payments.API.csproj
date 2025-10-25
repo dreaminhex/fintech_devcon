@@ -10,6 +10,7 @@
     <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="15.1.8" />
     <PackageReference Include="HotChocolate.AspNetCore.Voyager" Version="10.5.5" />
     <PackageReference Include="HotChocolate.Data" Version="15.1.8" />
+    <PackageReference Include="HotChocolate.Types.OffsetPagination" Version="15.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.3.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.4.2" />

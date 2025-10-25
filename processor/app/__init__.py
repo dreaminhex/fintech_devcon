@@ -14,13 +14,13 @@ schema = make_federated_schema(type_defs, *resolvers)
 
 # When the app starts, publish/update the schema in Redis
 def publish_schema_to_redis(schema):
-    redis_host = os.getenv("REDIS_HOST", "localhost") 
+    redis_host = os.getenv("REDIS_HOST", "localhost")
     redis_port = int(os.getenv("REDIS_PORT", 6379))
     service_name = os.getenv("SERVICE_NAME", "processor")
-    service_port = os.getenv("PORT", "80")
+    service_port = os.getenv("PORT", "2024")
     schema_key = f"gateway:{service_name}:schema"
     url_key = f"gateway:{service_name}:url"
-    service_url = f"python-processor-api:{service_port}/graphql"
+    service_url = f"http://python-processor-api:{service_port}/graphql"
 
     try:
         r = redis.Redis(host=redis_host, port=redis_port, decode_responses=True)

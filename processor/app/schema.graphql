@@ -1,9 +1,83 @@
 scalar DateTime
 
+enum SortOrder {
+  ASC
+  DESC
+}
+
+input AccountFilterInput {
+  accounttoken: String
+  accountname: String
+  accounttype: Int
+  minBalance: Float
+  maxBalance: Float
+}
+
+input AccountSortInput {
+  accountname: SortOrder
+  balance: SortOrder
+  accounttoken: SortOrder
+}
+
+input PaymentFilterInput {
+  userid: String
+  loannumber: String
+  accounttoken: String
+  minTotal: Float
+  maxTotal: Float
+  startDate: DateTime
+  endDate: DateTime
+}
+
+input PaymentSortInput {
+  paymentdate: SortOrder
+  total: SortOrder
+  userid: SortOrder
+}
+
+input LoanFilterInput {
+  loannumber: String
+  loanname: String
+  minBalance: Float
+  maxBalance: Float
+  minRate: Float
+  maxRate: Float
+}
+
+input LoanSortInput {
+  loanname: SortOrder
+  balance: SortOrder
+  rate: SortOrder
+  nextpaymentdate: SortOrder
+}
+
+type CollectionSegment {
+  items: [Payment!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type AccountCollectionSegment {
+  items: [Account!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type LoanCollectionSegment {
+  items: [Loan!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
 type Query {
-  payments: [Payment!]
-  accounts: [Account!]
-  loans: [Loan!]
+  payments(skip: Int = 0, take: Int = 10, where: PaymentFilterInput, order: PaymentSortInput): CollectionSegment!
+  accounts(skip: Int = 0, take: Int = 10, where: AccountFilterInput, order: AccountSortInput): AccountCollectionSegment!
+  loans(skip: Int = 0, take: Int = 10, where: LoanFilterInput, order: LoanSortInput): LoanCollectionSegment!
 }
 
 type Payment {

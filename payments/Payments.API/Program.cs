@@ -5,6 +5,7 @@ using GraphQL;
 using GraphQL.Types;
 using HotChocolate.AspNetCore.Voyager;
 using HotChocolate.Execution;
+using HotChocolate.Types.Pagination;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Payments.API.Models;
@@ -36,7 +37,14 @@ builder.Services
     .AddQueryType<UserQuery>()
     .AddApolloFederation()
     .AddFiltering()
-    .AddSorting();
+    .AddSorting()
+    .AddProjections()
+    .ModifyPagingOptions(options =>
+    {
+        options.DefaultPageSize = 10;
+        options.MaxPageSize = 100;
+        options.IncludeTotalCount = true;
+    });
 
 // Allow any of our services to query this (dev only)
 builder.Services.AddCors(options =>

@@ -10,7 +10,7 @@ This project contains 7 applications that demonstrate the following application 
 
 📢 **REAL BIG FLASHY WARNING** 🚨
 
-This project is provided to you "as-is". It has no warranty, it is not intended to be prescriptive, absolute, or secure. It is ONLY provided as a demonstration of a concept. It does **not** necessarily contain all of the best and latest security practices, unit tests, perfect code, or anything else that should be ever used directly in production without deep and thorough review. This is a **concept**, not a **recipe**. I have done my best to provide clear guidance and mostly clean code, but with that said, I had < 3 weeks to put this all together, so it is not 100%, and it's simply not intended to be. Thank you.
+This project is provided to you "as-is". It has no warranty, it is not intended to be prescriptive, absolute, or secure. It is ONLY provided as a demonstration of a concept. It does **not** necessarily contain all of the best and latest security practices, unit tests, perfect code, or anything else that should be ever used directly in production without deep and thorough review. This is a **concept**, not a **recipe**. I have done my best to provide clear guidance and mostly clean code, but with that said, proceed with care. Thank you.
 
 So, for any lawyers, attorneys, or armchair architects: DO NOT ATTEMPT TO USE ANY OF THIS CODE IN PRODUCTION WITHOUT THOROUGH REVIEW. Myself, and the company I represent, are in **NO** way responsible or liable for any use or misuse of this code.
 
